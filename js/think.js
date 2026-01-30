@@ -20,6 +20,34 @@
 })();
 
 
+/* --- Color theme: persist selection via localStorage --- */
+(() => {
+  const root = document.documentElement;
+  const select = document.getElementById("color-theme");
+  const key = "ids-think-theme";
+
+  // Apply stored theme on load
+  const stored = localStorage.getItem(key);
+  if (stored) {
+    root.dataset.theme = stored;
+    if (select) select.value = stored;
+  }
+
+  // Persist on change
+  if (!select) return;
+  select.addEventListener("change", () => {
+    const value = select.value;
+    if (value) {
+      root.dataset.theme = value;
+      localStorage.setItem(key, value);
+    } else {
+      delete root.dataset.theme;
+      localStorage.removeItem(key);
+    }
+  });
+})();
+
+
 /* --- Revenue Trend chart (uPlot) --- */
 (() => {
   const el = document.getElementById("revenue-chart");

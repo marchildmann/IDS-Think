@@ -2,6 +2,20 @@
 
 ## 2026-01-30
 
+### Color Themes (`css/think.css`, `js/think.js`)
+
+- **Theme switching architecture** — color themes are `[data-theme]` blocks in
+  `think.css` that redefine `--light-*` and `--dark-*` palette variables. The
+  existing light/dark toggle works automatically with any color theme.
+- **Mid Century theme** (`data-theme="midcentury"`) — warm earth tones (cream,
+  tan, walnut), teal accent, avocado green, terracotta red, and mustard gold.
+  Both light and dark palettes included.
+- **Theme selector** — `<select id="color-theme">` added to the header in all
+  dashboard pages and the theme-corner in auth pages. Styled for both chrome
+  and surface backgrounds.
+- **Theme persistence** — JS reads/writes `data-theme` on `<html>` via
+  `localStorage`, so the selected theme survives page reloads and navigation.
+
 ### Companies Page (`companies.html`)
 
 - Added CRUD companies page with data table, search filter, create/edit dialog,

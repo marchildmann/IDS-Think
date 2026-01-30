@@ -168,6 +168,68 @@
   --chrome-overlay: var(--dark-chrome-overlay);
 }
 
+/* --------------------------------------------------------------------------
+   Color Themes
+   Each theme redefines the --light-* and --dark-* palette variables.
+   The light/dark toggle continues to work automatically.
+   Apply via <html data-theme="midcentury">.
+   -------------------------------------------------------------------------- */
+
+/* Mid Century — warm earth tones, teal accent, walnut chrome */
+[data-theme="midcentury"] {
+  /* ---- Light palette ---- */
+  --light-surface-0: #ede6d6;
+  --light-surface-1: #f8f4ec;
+  --light-surface-2: #d2c5ab;
+  --light-surface-3: #bfb099;
+  --light-text-0: #2b2118;
+  --light-text-1: #665847;
+  --light-text-2: #998a78;
+  --light-accent: #0e7c6b;
+  --light-accent-soft: #0e7c6b18;
+  --light-positive: #5a7a38;
+  --light-positive-soft: #e6efd6;
+  --light-negative: #b84530;
+  --light-negative-soft: #f5e4df;
+  --light-warning: #c49208;
+  --light-warning-soft: #f8f0d4;
+  --light-warning-text: #806010;
+  --light-chrome-bg: #2b2118;
+  --light-chrome-bg-hover: #44342a;
+  --light-chrome-bg-input: #44342a;
+  --light-chrome-border: #44342a;
+  --light-chrome-text: #c4b59a;
+  --light-chrome-text-heading: #8a7a62;
+  --light-chrome-text-active: #f8f4ec;
+  --light-chrome-overlay: rgb(43 33 24 / 0.5);
+
+  /* ---- Dark palette ---- */
+  --dark-surface-0: #181210;
+  --dark-surface-1: #2b2118;
+  --dark-surface-2: #4d3d30;
+  --dark-surface-3: #665847;
+  --dark-text-0: #ede6d6;
+  --dark-text-1: #c4b59a;
+  --dark-text-2: #8a7a62;
+  --dark-accent: #40bfaa;
+  --dark-accent-soft: #40bfaa18;
+  --dark-positive: #88b85c;
+  --dark-positive-soft: #283820;
+  --dark-negative: #e0785e;
+  --dark-negative-soft: #3a201a;
+  --dark-warning: #deb830;
+  --dark-warning-soft: #383010;
+  --dark-warning-text: #deb830;
+  --dark-chrome-bg: #120e0a;
+  --dark-chrome-bg-hover: #44342a;
+  --dark-chrome-bg-input: #44342a;
+  --dark-chrome-border: #4d3d30;
+  --dark-chrome-text: #c4b59a;
+  --dark-chrome-text-heading: #8a7a62;
+  --dark-chrome-text-active: #ede6d6;
+  --dark-chrome-overlay: rgb(18 14 10 / 0.65);
+}
+
 /* Density variants — apply to any container */
 [data-density="compact"]      { --density: 0.75; }
 [data-density="comfortable"]  { --density: 1.25; }
@@ -405,6 +467,30 @@ body > header nav a {
 
 body > header nav a:hover {
   color: var(--chrome-text-active);
+}
+
+/* Color theme selector — compact select in header chrome */
+body > header select {
+  height: 2rem;
+  padding-inline: var(--space-1);
+  padding-inline-end: calc(var(--space-1) + 1.25em);
+  background: var(--chrome-bg-input);
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%23999' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-1) center;
+  transition: border-color 150ms;
+}
+
+body > header select:focus {
+  border-color: var(--accent);
+  outline: none;
 }
 
 /* Avatar */
@@ -889,6 +975,12 @@ dash-widget th[data-sort]:hover {
   background: var(--surface-2);
 }
 
+/* Buttons inside cells inherit table density — remove vertical padding
+   so row height is controlled only by cell padding. */
+dash-widget td button {
+  padding-block: 0;
+}
+
 /* Responsive: table becomes stacked cards in narrow containers */
 @container (width < 28rem) {
   dash-widget table,
@@ -1363,6 +1455,23 @@ dialog > footer form {
 
 #theme-toggle:checked + [data-role="theme-toggle"]::before {
   translate: 1.25rem;
+}
+
+/* Color theme select on auth pages (outside header chrome) */
+[data-theme-corner] select {
+  padding: var(--space-1);
+  padding-inline-end: calc(var(--space-1) + 1.25em);
+  background: var(--surface-2);
+  border: none;
+  border-radius: var(--radius-s);
+  color: var(--text-0);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-1) center;
 }
 
 
