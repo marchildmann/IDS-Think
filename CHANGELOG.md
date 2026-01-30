@@ -52,3 +52,9 @@
 
 - Added Datatable link to the sidebar in all dashboard pages
   (`index.html`, `forms.html`, `tabs.html`, `nodes.html`, `datatable.html`).
+
+### SEO
+
+- **`<meta name="description">`** — added to all HTML pages:
+  `index.html`, `forms.html`, `tabs.html`, `nodes.html`, `datatable.html`,
+  `login.html`, `signup.html`, `pwd_forgot.html`.
