@@ -241,24 +241,60 @@ body {
   padding-inline: 0;
 }
 
-/* Column spanning via data attribute */
-[data-span="1"]    { grid-column: span 1; }
-[data-span="2"]    { grid-column: span 2; }
-[data-span="3"]    { grid-column: span 3; }
-[data-span="4"]    { grid-column: span 4; }
-[data-span="5"]    { grid-column: span 5; }
-[data-span="6"]    { grid-column: span 6; }
-[data-span="7"]    { grid-column: span 7; }
-[data-span="8"]    { grid-column: span 8; }
-[data-span="9"]    { grid-column: span 9; }
-[data-span="10"]   { grid-column: span 10; }
-[data-span="11"]   { grid-column: span 11; }
-[data-span="12"]   { grid-column: span 12; }
-[data-span="13"]   { grid-column: span 13; }
-[data-span="14"]   { grid-column: span 14; }
-[data-span="15"]   { grid-column: span 15; }
-[data-span="16"]   { grid-column: span 16; }
+/* Column spanning — longhand so [data-start] can compose */
+[data-span="1"]    { grid-column-end: span 1; }
+[data-span="2"]    { grid-column-end: span 2; }
+[data-span="3"]    { grid-column-end: span 3; }
+[data-span="4"]    { grid-column-end: span 4; }
+[data-span="5"]    { grid-column-end: span 5; }
+[data-span="6"]    { grid-column-end: span 6; }
+[data-span="7"]    { grid-column-end: span 7; }
+[data-span="8"]    { grid-column-end: span 8; }
+[data-span="9"]    { grid-column-end: span 9; }
+[data-span="10"]   { grid-column-end: span 10; }
+[data-span="11"]   { grid-column-end: span 11; }
+[data-span="12"]   { grid-column-end: span 12; }
+[data-span="13"]   { grid-column-end: span 13; }
+[data-span="14"]   { grid-column-end: span 14; }
+[data-span="15"]   { grid-column-end: span 15; }
+[data-span="16"]   { grid-column-end: span 16; }
 [data-span="full"] { grid-column: 1 / -1; }
+
+/* Column start position — composable with [data-span] */
+[data-start="1"]   { grid-column-start: 1; }
+[data-start="2"]   { grid-column-start: 2; }
+[data-start="3"]   { grid-column-start: 3; }
+[data-start="4"]   { grid-column-start: 4; }
+[data-start="5"]   { grid-column-start: 5; }
+[data-start="6"]   { grid-column-start: 6; }
+[data-start="7"]   { grid-column-start: 7; }
+[data-start="8"]   { grid-column-start: 8; }
+[data-start="9"]   { grid-column-start: 9; }
+[data-start="10"]  { grid-column-start: 10; }
+[data-start="11"]  { grid-column-start: 11; }
+[data-start="12"]  { grid-column-start: 12; }
+[data-start="13"]  { grid-column-start: 13; }
+[data-start="14"]  { grid-column-start: 14; }
+[data-start="15"]  { grid-column-start: 15; }
+[data-start="16"]  { grid-column-start: 16; }
+
+/* Centered spans — responsive centering within the fluid grid.
+   Falls back to full-width when span ≥ available columns.
+   Centering formula: start = (columns − span) / 2 + 1 */
+[data-span-center] { grid-column: 1 / -1; }
+
+@media (width >= 42rem) {
+  [data-span-center="4"]  { grid-column: 3 / 7; }
+  [data-span-center="6"]  { grid-column: 2 / 8; }
+}
+
+@media (width >= 66rem) {
+  [data-span-center="4"]  { grid-column: 7 / 11; }
+  [data-span-center="6"]  { grid-column: 6 / 12; }
+  [data-span-center="8"]  { grid-column: 5 / 13; }
+  [data-span-center="10"] { grid-column: 4 / 14; }
+  [data-span-center="12"] { grid-column: 3 / 15; }
+}
 
 
 /* --------------------------------------------------------------------------
@@ -1412,6 +1448,11 @@ tab-group > :checked + label + tab-panel {
   gap: 0;
   font-size: 0.75rem;
   color: var(--text-2);
+
+  & > span:first-child {
+    font-weight: 500;
+    color: var(--text-1);
+  }
 }
 
 [data-form] input:not([type="checkbox"]):not([type="radio"]),

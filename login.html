@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign In — IDS-Think</title>
+  <link rel="stylesheet" href="css/think.css">
+  <script src="js/think.js" defer></script>
+  <style>
+    /* Standalone centered layout — uses 2x fluid grid */
+    body {
+      align-content: center;
+      padding-block: var(--space-3);
+    }
+
+    [data-auth-card] {
+      background: var(--surface-1);
+      border: 1px solid var(--surface-2);
+      padding: var(--space-5) var(--space-4);
+    }
+
+    /* Let the grid control form width instead of [data-form] max-width */
+    [data-auth-card] [data-form] {
+      max-width: none;
+    }
+
+    [data-auth-header] {
+      text-align: center;
+      margin-block-end: var(--space-4);
+    }
+
+    [data-auth-header] h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-0);
+      margin: 0 0 var(--space-1);
+    }
+
+    [data-auth-header] p {
+      font-size: 0.875rem;
+      color: var(--text-1);
+      margin: 0;
+    }
+
+    [data-auth-footer] {
+      text-align: center;
+      margin-block-start: var(--space-3);
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+
+    [data-auth-footer] a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    [data-auth-footer] a:hover {
+      text-decoration: underline;
+    }
+
+    [data-form] [data-check-row] {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      color: var(--text-1);
+    }
+
+    [data-form] [data-check-row] label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: 0.8125rem;
+      color: var(--text-1);
+      cursor: pointer;
+    }
+
+    [data-form] [data-check-row] a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.8125rem;
+    }
+
+    [data-form] [data-check-row] a:hover {
+      text-decoration: underline;
+    }
+
+    [data-theme-corner] {
+      position: fixed;
+      top: var(--space-2);
+      right: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+  </style>
+</head>
+<body data-grid="fluid">
+
+  <!-- Theme toggle in corner -->
+  <div data-theme-corner>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden>
+    <label for="theme-toggle" data-role="theme-toggle" aria-label="Toggle dark mode"></label>
+  </div>
+
+  <div data-auth-card data-span-center="4">
+    <div data-auth-header>
+      <h1>IDS-Think</h1>
+      <p>Sign in to your account</p>
+    </div>
+
+    <form data-form data-form-group="login" data-action="/api/login">
+
+      <label>
+        <span>Email address</span>
+        <input type="email" name="email" placeholder="you@example.com" required autocomplete="email" autofocus>
+      </label>
+
+      <label>
+        <span>Password</span>
+        <input type="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+      </label>
+
+      <div data-check-row>
+        <label>
+          <input type="checkbox" name="remember" value="1">
+          <span>Remember me</span>
+        </label>
+        <a href="pwd_forgot.html">Forgot password?</a>
+      </div>
+
+      <div data-actions>
+        <button data-variant="primary" type="submit">Sign in</button>
+      </div>
+
+    </form>
+
+    <div data-auth-footer>
+      <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+  </div>
+
+</body>
+</html>
