@@ -12,7 +12,7 @@
   <script src="js/nodes.js" defer></script>
   <style>
     /* Node editor fills the widget area edge-to-edge */
-    dash-widget:has(canvas) > section {
+    dash-widget:has(canvas) > div {
       padding: 0;
       position: relative;
       min-height: 600px;
@@ -32,8 +32,8 @@
   <a href="#main-content" data-skip-link>Skip to content</a>
 
   <header>
-    <label for="nav-toggle" aria-label="Toggle navigation">&#9776;</label>
-    <input type="checkbox" id="nav-toggle" data-visually-hidden>
+    <label for="nav-toggle">&#9776;</label>
+    <input type="checkbox" id="nav-toggle" data-visually-hidden aria-label="Toggle navigation">
     <h1>IDS-Think</h1>
     <nav aria-label="Primary">
       <a href="index.html">Dashboard</a>
@@ -45,8 +45,8 @@
     <search>
       <input type="search" placeholder="Search reports, metrics, users...">
     </search>
-    <input type="checkbox" id="theme-toggle" data-visually-hidden>
-    <label for="theme-toggle" data-role="theme-toggle" aria-label="Toggle dark mode"></label>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden aria-label="Toggle dark mode">
+    <label for="theme-toggle" data-role="theme-toggle"></label>
     <span data-role="avatar">JD</span>
   </header>
 
@@ -57,6 +57,7 @@
     <a href="#">Customers</a>
     <a href="#">Products</a>
     <a href="#">Orders</a>
+    <a href="companies.html">Companies</a>
     <span data-role="heading">Components</span>
     <a href="forms.html">Forms</a>
     <a href="tabs.html">Tabs</a>
@@ -93,9 +94,9 @@
             <button data-variant="ghost" id="btn-clear">Clear</button>
           </span>
         </header>
-        <section>
+        <div>
           <canvas id="node-canvas"></canvas>
-        </section>
+        </div>
         <footer>Right-click to add nodes. Drag outputs to inputs to connect.</footer>
       </dash-widget>
 

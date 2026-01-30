@@ -13,8 +13,8 @@
   <a href="#main-content" data-skip-link>Skip to content</a>
 
   <header>
-    <label for="nav-toggle" aria-label="Toggle navigation">&#9776;</label>
-    <input type="checkbox" id="nav-toggle" data-visually-hidden>
+    <label for="nav-toggle">&#9776;</label>
+    <input type="checkbox" id="nav-toggle" data-visually-hidden aria-label="Toggle navigation">
     <h1>IDS-Think</h1>
     <nav aria-label="Primary">
       <a href="index.html">Dashboard</a>
@@ -26,8 +26,8 @@
     <search>
       <input type="search" placeholder="Search reports, metrics, users...">
     </search>
-    <input type="checkbox" id="theme-toggle" data-visually-hidden>
-    <label for="theme-toggle" data-role="theme-toggle" aria-label="Toggle dark mode"></label>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden aria-label="Toggle dark mode">
+    <label for="theme-toggle" data-role="theme-toggle"></label>
     <span data-role="avatar">JD</span>
   </header>
 
@@ -38,6 +38,7 @@
     <a href="#">Customers</a>
     <a href="#">Products</a>
     <a href="#">Orders</a>
+    <a href="companies.html">Companies</a>
     <span data-role="heading">Components</span>
     <a href="forms.html">Forms</a>
     <a href="tabs.html">Tabs</a>
@@ -76,7 +77,7 @@
             <button data-variant="ghost">Export</button>
           </span>
         </header>
-        <section>
+        <div>
           <table>
             <thead>
               <tr>
@@ -125,7 +126,7 @@
               </tr>
             </tbody>
           </table>
-        </section>
+        </div>
       </dash-widget>
 
     </dash-board>
@@ -135,7 +136,7 @@
         <h2>Order #4821</h2>
         <form method="dialog"><button data-variant="ghost" aria-label="Close">&times;</button></form>
       </header>
-      <section>
+      <div>
         <dl>
           <dt>Customer</dt>
           <dd>Acme Corp</dd>
@@ -150,7 +151,7 @@
           <dt>Notes</dt>
           <dd>Priority shipping requested. Deliver before Feb 1.</dd>
         </dl>
-      </section>
+      </div>
       <footer>
         <form method="dialog">
           <button>Cancel</button>

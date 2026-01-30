@@ -2,6 +2,21 @@
 
 ## 2026-01-30
 
+### Companies Page (`companies.html`)
+
+- Added CRUD companies page with data table, search filter, create/edit dialog,
+  and delete confirmation dialog.
+- Table displays Name, Industry, Status (as `data-status` badge), City, Country,
+  and Employees columns with Edit and Delete actions per row.
+- Search input in widget header filters table rows client-side.
+- Create/Edit reuses a single `<dialog>` with `[data-form]` form pattern;
+  title switches between "New Company" and "Edit Company".
+- Delete uses a separate confirmation `<dialog>` following the native
+  `<form method="dialog">` close pattern.
+- Demo data includes 6 companies across varied industries, statuses, and
+  geographies.
+- Added Companies link to the sidebar in all dashboard pages.
+
 ### Grid System (`css/think.css`)
 
 - **`[data-span]` switched to longhand** — changed from `grid-column: span N`
@@ -30,6 +45,11 @@
   `repeat(2, minmax(0, 1fr))` and added a `< 42rem` media query that collapses
   side-by-side fields to a single column on mobile.
 
+- **`[data-form] select` Safari fix** — switched from `appearance: auto` to
+  `appearance: none` so Safari respects the shared padding and font-size rules.
+  Added an inline SVG chevron (`background-image`) as a dropdown indicator to
+  replace the lost native arrow.
+
 ### Auth Pages (`signup.html`, `login.html`)
 
 - Migrated from hardcoded `max-width` + `place-items: center` layout to the
@@ -52,6 +72,21 @@
 
 - Added Datatable link to the sidebar in all dashboard pages
   (`index.html`, `forms.html`, `tabs.html`, `nodes.html`, `datatable.html`).
+
+### W3C Validation
+
+- **`<time>` elements** — added `datetime` attributes to all `<time>` elements
+  in `index.html` so human-readable text ("2 minutes ago") is paired with a
+  machine-readable ISO timestamp.
+
+- **`aria-label` on associated `<label>`** — moved `aria-label` from `<label>`
+  elements to their associated `<input>` controls (nav-toggle, theme-toggle) to
+  comply with ARIA in HTML spec. Updated across all pages.
+
+- **`<section>` → `<div>`** — widget and dialog content areas changed from
+  `<section>` to `<div>` since they don't contain their own headings.
+  Updated CSS selectors in `think.css` (`dash-widget > div`,
+  `dialog > div`) and inline styles in `nodes.html`.
 
 ### SEO
 

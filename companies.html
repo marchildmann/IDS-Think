@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IDS-Think companies — manage company records with inline CRUD operations.">
+  <title>Companies — IDS-Think</title>
+  <link rel="stylesheet" href="css/think.css">
+  <script src="js/think.js" defer></script>
+</head>
+<body>
+
+  <a href="#main-content" data-skip-link>Skip to content</a>
+
+  <header>
+    <label for="nav-toggle">&#9776;</label>
+    <input type="checkbox" id="nav-toggle" data-visually-hidden aria-label="Toggle navigation">
+    <h1>IDS-Think</h1>
+    <nav aria-label="Primary">
+      <a href="index.html">Dashboard</a>
+      <a href="#">Analytics</a>
+      <a href="#">Reports</a>
+      <a href="#">Settings</a>
+    </nav>
+    <span data-role="spacer"></span>
+    <search>
+      <input type="search" placeholder="Search reports, metrics, users...">
+    </search>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden aria-label="Toggle dark mode">
+    <label for="theme-toggle" data-role="theme-toggle"></label>
+    <span data-role="avatar">JD</span>
+  </header>
+
+  <nav aria-label="Sidebar">
+    <span data-role="heading">Navigation</span>
+    <a href="index.html">Dashboard</a>
+    <a href="#">Analytics</a>
+    <a href="#">Customers</a>
+    <a href="#">Products</a>
+    <a href="#">Orders</a>
+    <a href="companies.html" aria-current="page">Companies</a>
+    <span data-role="heading">Components</span>
+    <a href="forms.html">Forms</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="nodes.html">Nodes</a>
+    <a href="datatable.html">Datatable</a>
+    <span data-role="heading">System</span>
+    <a href="#">Settings</a>
+    <a href="login.html">Login</a>
+    <a href="#">Audit Log</a>
+  </nav>
+
+  <main id="main-content" data-grid="fluid">
+
+    <nav aria-label="Breadcrumb" data-span="full">
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Navigation</a></li>
+        <li>Companies</li>
+      </ol>
+    </nav>
+
+    <hgroup data-span="full">
+      <h1>Companies</h1>
+      <p>Manage your company directory</p>
+    </hgroup>
+
+    <dash-board data-span="full">
+
+      <dash-widget data-span="full">
+        <header>
+          <h2>All Companies</h2>
+          <span>
+            <input type="search" id="company-search" placeholder="Filter companies..." aria-label="Filter companies">
+            <button data-variant="primary" onclick="openCompanyDialog()">New Company</button>
+          </span>
+        </header>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th data-sort>Name</th>
+                <th data-sort>Industry</th>
+                <th data-sort>Status</th>
+                <th data-sort>City</th>
+                <th data-sort>Country</th>
+                <th data-sort>Employees</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="companies-tbody">
+              <tr data-website="https://acme.com" data-email="contact@acme.com">
+                <td data-label="Name">Acme Corp</td>
+                <td data-label="Industry">Technology</td>
+                <td data-label="Status"><span data-status="active">Active</span></td>
+                <td data-label="City">San Francisco</td>
+                <td data-label="Country">United States</td>
+                <td data-label="Employees" data-text="mono">4,200</td>
+                <td data-label="Actions">
+                  <span>
+                    <button data-variant="ghost" onclick="editCompany(this)">Edit</button>
+                    <button data-variant="ghost" onclick="deleteCompany(this)">Delete</button>
+                  </span>
+                </td>
+              </tr>
+              <tr data-website="https://medicaresolutions.com" data-email="info@medicaresolutions.com">
+                <td data-label="Name">MediCare Solutions</td>
+                <td data-label="Industry">Healthcare</td>
+                <td data-label="Status"><span data-status="active">Active</span></td>
+                <td data-label="City">Boston</td>
+                <td data-label="Country">United States</td>
+                <td data-label="Employees" data-text="mono">1,850</td>
+                <td data-label="Actions">
+                  <span>
+                    <button data-variant="ghost" onclick="editCompany(this)">Edit</button>
+                    <button data-variant="ghost" onclick="deleteCompany(this)">Delete</button>
+                  </span>
+                </td>
+              </tr>
+              <tr data-website="https://finedge.co.uk" data-email="hello@finedge.co.uk">
+                <td data-label="Name">FinEdge Capital</td>
+                <td data-label="Industry">Finance</td>
+                <td data-label="Status"><span data-status="inactive">Inactive</span></td>
+                <td data-label="City">London</td>
+                <td data-label="Country">United Kingdom</td>
+                <td data-label="Employees" data-text="mono">720</td>
+                <td data-label="Actions">
+                  <span>
+                    <button data-variant="ghost" onclick="editCompany(this)">Edit</button>
+                    <button data-variant="ghost" onclick="deleteCompany(this)">Delete</button>
+                  </span>
+                </td>
+              </tr>
+              <tr data-website="https://precisionmfg.de" data-email="sales@precisionmfg.de">
+                <td data-label="Name">Precision Manufacturing</td>
+                <td data-label="Industry">Manufacturing</td>
+                <td data-label="Status"><span data-status="active">Active</span></td>
+                <td data-label="City">Munich</td>
+                <td data-label="Country">Germany</td>
+                <td data-label="Employees" data-text="mono">3,100</td>
+                <td data-label="Actions">
+                  <span>
+                    <button data-variant="ghost" onclick="editCompany(this)">Edit</button>
+                    <button data-variant="ghost" onclick="deleteCompany(this)">Delete</button>
+                  </span>
+                </td>
+              </tr>
+              <tr data-website="https://shopwave.ca" data-email="support@shopwave.ca">
+                <td data-label="Name">ShopWave Retail</td>
+                <td data-label="Industry">Retail</td>
+                <td data-label="Status"><span data-status="active">Active</span></td>
+                <td data-label="City">Toronto</td>
+                <td data-label="Country">Canada</td>
+                <td data-label="Employees" data-text="mono">560</td>
+                <td data-label="Actions">
+                  <span>
+                    <button data-variant="ghost" onclick="editCompany(this)">Edit</button>
+                    <button data-variant="ghost" onclick="deleteCompany(this)">Delete</button>
+                  </span>
+                </td>
+              </tr>
+              <tr data-website="https://novatech.com.au" data-email="info@novatech.com.au">
+                <td data-label="Name">NovaTech Systems</td>
+                <td data-label="Industry">Technology</td>
+                <td data-label="Status"><span data-status="inactive">Inactive</span></td>
+                <td data-label="City">Sydney</td>
+                <td data-label="Country">Australia</td>
+                <td data-label="Employees" data-text="mono">2,400</td>
+                <td data-label="Actions">
+                  <span>
+                    <button data-variant="ghost" onclick="editCompany(this)">Edit</button>
+                    <button data-variant="ghost" onclick="deleteCompany(this)">Delete</button>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <footer>6 companies</footer>
+      </dash-widget>
+
+    </dash-board>
+
+    <!-- Create / Edit Company -->
+    <dialog id="company-dialog">
+      <header>
+        <h2 id="company-dialog-title">New Company</h2>
+        <form method="dialog"><button data-variant="ghost" aria-label="Close">&times;</button></form>
+      </header>
+      <div>
+        <form data-form id="company-form" data-form-group="company" data-action="/api/companies">
+
+          <label>
+            <span>Company Name</span>
+            <input type="text" name="name" required>
+          </label>
+
+          <div data-field-row>
+            <label>
+              <span>Industry</span>
+              <select name="industry" required>
+                <option value="">Select industry...</option>
+                <option>Technology</option>
+                <option>Healthcare</option>
+                <option>Finance</option>
+                <option>Manufacturing</option>
+                <option>Retail</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>
+              <span>Status</span>
+              <select name="status" required>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>Website</span>
+            <input type="url" name="website" placeholder="https://example.com">
+          </label>
+
+          <div data-field-row>
+            <label>
+              <span>City</span>
+              <input type="text" name="city" required>
+            </label>
+            <label>
+              <span>Country</span>
+              <select name="country" required>
+                <option value="">Select country...</option>
+                <option>United States</option>
+                <option>Canada</option>
+                <option>United Kingdom</option>
+                <option>Germany</option>
+                <option>France</option>
+                <option>Australia</option>
+              </select>
+            </label>
+          </div>
+
+          <div data-field-row>
+            <label>
+              <span>Contact Email</span>
+              <input type="email" name="email" required>
+            </label>
+            <label>
+              <span>Employees</span>
+              <input type="number" name="employees" min="1" placeholder="e.g. 500">
+            </label>
+          </div>
+
+          <div data-actions>
+            <button data-variant="primary" type="submit">Save Company</button>
+            <button data-variant="dark" type="button" onclick="document.getElementById('company-dialog').close()">Cancel</button>
+          </div>
+
+        </form>
+      </div>
+    </dialog>
+
+    <!-- Delete Confirmation -->
+    <dialog id="delete-dialog">
+      <header>
+        <h2>Delete Company</h2>
+        <form method="dialog"><button data-variant="ghost" aria-label="Close">&times;</button></form>
+      </header>
+      <div>
+        <p>Are you sure you want to delete <strong id="delete-company-name"></strong>? This action cannot be undone.</p>
+      </div>
+      <footer>
+        <form method="dialog">
+          <button>Cancel</button>
+          <button data-variant="primary" onclick="confirmDelete()">Delete</button>
+        </form>
+      </footer>
+    </dialog>
+
+  </main>
+
+  <script>
+    /* Search / filter */
+    document.getElementById("company-search").addEventListener("input", function () {
+      var query = this.value.toLowerCase();
+      document.querySelectorAll("#companies-tbody tr").forEach(function (row) {
+        row.style.display = row.textContent.toLowerCase().includes(query) ? "" : "none";
+      });
+    });
+
+    /* Open dialog — new company */
+    function openCompanyDialog() {
+      document.getElementById("company-dialog-title").textContent = "New Company";
+      document.getElementById("company-form").reset();
+      document.getElementById("company-dialog").showModal();
+    }
+
+    /* Open dialog — edit company (populate from row) */
+    function editCompany(btn) {
+      var row = btn.closest("tr");
+      var cells = row.querySelectorAll("td");
+      var form = document.getElementById("company-form");
+
+      form.name.value      = cells[0].textContent;
+      form.industry.value  = cells[1].textContent;
+      form.status.value    = cells[2].textContent.trim();
+      form.city.value      = cells[3].textContent;
+      form.country.value   = cells[4].textContent;
+      form.employees.value = cells[5].textContent.replace(/,/g, "");
+      form.website.value   = row.dataset.website || "";
+      form.email.value     = row.dataset.email || "";
+
+      document.getElementById("company-dialog-title").textContent = "Edit Company";
+      document.getElementById("company-dialog").showModal();
+    }
+
+    /* Delete confirmation */
+    function deleteCompany(btn) {
+      var name = btn.closest("tr").querySelector("td").textContent;
+      document.getElementById("delete-company-name").textContent = name;
+      document.getElementById("delete-dialog").showModal();
+    }
+
+    function confirmDelete() {
+      document.getElementById("delete-dialog").close();
+    }
+
+    /* Close company dialog after form submit (demo) */
+    document.getElementById("company-form").addEventListener("submit", function () {
+      var dlg = document.getElementById("company-dialog");
+      setTimeout(function () { dlg.close(); }, 100);
+    });
+  </script>
+
+</body>
+</html>
