@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Datatable — IDS-Think</title>
+  <link rel="stylesheet" href="css/think.css">
+  <script src="js/think.js" defer></script>
+</head>
+<body>
+
+  <a href="#main-content" data-skip-link>Skip to content</a>
+
+  <header>
+    <label for="nav-toggle" aria-label="Toggle navigation">&#9776;</label>
+    <input type="checkbox" id="nav-toggle" data-visually-hidden>
+    <h1>IDS-Think</h1>
+    <nav aria-label="Primary">
+      <a href="index.html">Dashboard</a>
+      <a href="#">Analytics</a>
+      <a href="#">Reports</a>
+      <a href="#">Settings</a>
+    </nav>
+    <span data-role="spacer"></span>
+    <search>
+      <input type="search" placeholder="Search reports, metrics, users...">
+    </search>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden>
+    <label for="theme-toggle" data-role="theme-toggle" aria-label="Toggle dark mode"></label>
+    <span data-role="avatar">JD</span>
+  </header>
+
+  <nav aria-label="Sidebar">
+    <span data-role="heading">Navigation</span>
+    <a href="index.html">Dashboard</a>
+    <a href="#">Analytics</a>
+    <a href="#">Customers</a>
+    <a href="#">Products</a>
+    <a href="#">Orders</a>
+    <span data-role="heading">Components</span>
+    <a href="forms.html">Forms</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="nodes.html">Nodes</a>
+    <a href="datatable.html" aria-current="page">Datatable</a>
+    <span data-role="heading">System</span>
+    <a href="#">Settings</a>
+    <a href="login.html">Login</a>
+    <a href="#">Audit Log</a>
+  </nav>
+
+  <main id="main-content" data-grid="fluid">
+
+    <nav aria-label="Breadcrumb" data-span="full">
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Components</a></li>
+        <li>Datatable</li>
+      </ol>
+    </nav>
+
+    <hgroup data-span="full">
+      <h1>Datatable</h1>
+      <p>Component Demo</p>
+    </hgroup>
+
+    <dash-board data-span="full">
+
+      <!-- Data Table — responsive table that becomes stacked cards
+          on narrow containers via @container query and data-label -->
+      <dash-widget data-span="full">
+        <header>
+          <h2>Recent Orders</h2>
+          <span>
+            <button data-variant="ghost" onclick="document.getElementById('order-detail').showModal()">View Detail</button>
+            <button data-variant="ghost">Export</button>
+          </span>
+        </header>
+        <section>
+          <table>
+            <thead>
+              <tr>
+                <th data-sort="desc" aria-sort="descending">Order</th>
+                <th data-sort>Customer</th>
+                <th data-sort>Status</th>
+                <th data-sort>Amount</th>
+                <th data-sort>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Order">#4821</td>
+                <td data-label="Customer">Acme Corp</td>
+                <td data-label="Status"><span data-status="active">Completed</span></td>
+                <td data-label="Amount" data-text="mono">$2,340.00</td>
+                <td data-label="Date" data-text="muted">Jan 29, 2026</td>
+              </tr>
+              <tr>
+                <td data-label="Order">#4820</td>
+                <td data-label="Customer">Globex Inc</td>
+                <td data-label="Status"><span data-status="pending">Pending</span></td>
+                <td data-label="Amount" data-text="mono">$1,105.50</td>
+                <td data-label="Date" data-text="muted">Jan 28, 2026</td>
+              </tr>
+              <tr>
+                <td data-label="Order">#4819</td>
+                <td data-label="Customer">Initech LLC</td>
+                <td data-label="Status"><span data-status="active">Completed</span></td>
+                <td data-label="Amount" data-text="mono">$890.00</td>
+                <td data-label="Date" data-text="muted">Jan 28, 2026</td>
+              </tr>
+              <tr>
+                <td data-label="Order">#4818</td>
+                <td data-label="Customer">Umbrella Co</td>
+                <td data-label="Status"><span data-status="inactive">Cancelled</span></td>
+                <td data-label="Amount" data-text="mono">$3,200.00</td>
+                <td data-label="Date" data-text="muted">Jan 27, 2026</td>
+              </tr>
+              <tr>
+                <td data-label="Order">#4817</td>
+                <td data-label="Customer">Stark Industries</td>
+                <td data-label="Status"><span data-status="active">Completed</span></td>
+                <td data-label="Amount" data-text="mono">$5,670.00</td>
+                <td data-label="Date" data-text="muted">Jan 27, 2026</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </dash-widget>
+
+    </dash-board>
+
+    <dialog id="order-detail" data-span="full">
+      <header>
+        <h2>Order #4821</h2>
+        <form method="dialog"><button data-variant="ghost" aria-label="Close">&times;</button></form>
+      </header>
+      <section>
+        <dl>
+          <dt>Customer</dt>
+          <dd>Acme Corp</dd>
+          <dt>Status</dt>
+          <dd><span data-status="active">Completed</span></dd>
+          <dt>Amount</dt>
+          <dd data-text="mono">$2,340.00</dd>
+          <dt>Date</dt>
+          <dd>Jan 29, 2026</dd>
+          <dt>Shipping Address</dt>
+          <dd>123 Industrial Blvd, Suite 400<br>Springfield, IL 62704</dd>
+          <dt>Notes</dt>
+          <dd>Priority shipping requested. Deliver before Feb 1.</dd>
+        </dl>
+      </section>
+      <footer>
+        <form method="dialog">
+          <button>Cancel</button>
+          <button data-variant="primary">Confirm</button>
+        </form>
+      </footer>
+    </dialog>
+
+  </main>
+</body>
+</html>
