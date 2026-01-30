@@ -1,0 +1,1473 @@
+/* ==========================================================================
+   IDS-Think 2x Grid System
+   Modern CSS targeting modern browsers only.
+
+   Philosophy:
+     - Custom elements for domain concepts (dash-board, dash-widget, dash-metric)
+     - Semantic HTML as styling hooks (header, nav, section, table)
+     - Data attributes for variants (data-span, data-trend, data-status)
+     - Container queries for self-aware widgets
+     - :has() to eliminate JavaScript where possible
+     - Density variable for proportional spacing control
+
+   Breakpoints (from 2x Grid spec):
+     sm   (default)  — 320px / 20rem  — 4 columns
+     md               — 672px / 42rem  — 8 columns
+     lg               — 1056px / 66rem — 16 columns
+     xl               — 1312px / 82rem — 16 columns
+     max              — 1584px / 99rem — 16 columns
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Design Tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Density: one property scales all spacing proportionally.
+     Override with [data-density] on any container. */
+  --density: 1;
+
+  /* Core spacing derived from density and the 8px mini unit */
+  --space-unit: calc(0.5rem * var(--density));
+  --space-1: calc(var(--space-unit) * 1);   /*  8px — 1× mini unit */
+  --space-2: calc(var(--space-unit) * 2);   /* 16px — 2× */
+  --space-3: calc(var(--space-unit) * 3);   /* 24px — 3× */
+  --space-4: calc(var(--space-unit) * 4);   /* 32px — 4× */
+  --space-5: calc(var(--space-unit) * 6);   /* 48px — 6× */
+  --space-6: calc(var(--space-unit) * 8);   /* 64px — 8× */
+  --space-7: calc(var(--space-unit) * 10);  /* 80px — 10× */
+
+  /* Grid configuration — small / default */
+  --grid-columns: 4;
+  --grid-gutter: var(--space-4);    /* 32px between grid items */
+  --grid-margin: 0;
+  --grid-padding: var(--space-2);   /* 16px outer padding */
+  --grid-max-width: 99rem;          /* 1584px */
+
+  /* Layout constraints */
+  --sidebar-width: 16rem;
+  --header-height: 3rem;
+  --widget-min: 20rem;
+
+  /* ---- Light palette ---- */
+  --light-surface-0: #f4f4f4;
+  --light-surface-1: #ffffff;
+  --light-surface-2: #e0e0e0;
+  --light-surface-3: #c6c6c6;
+  --light-text-0: #161616;
+  --light-text-1: #525252;
+  --light-text-2: #8d8d8d;
+  --light-accent: #0f62fe;
+  --light-accent-soft: #0f62fe18;
+  --light-positive: #198038;
+  --light-positive-soft: #defbe6;
+  --light-negative: #da1e28;
+  --light-negative-soft: #fff1f1;
+  --light-warning: #f1c21b;
+  --light-warning-soft: #fff8e1;
+  --light-warning-text: #8a6d3b;
+  --light-chrome-bg: #161616;
+  --light-chrome-bg-hover: #353535;
+  --light-chrome-bg-input: #353535;
+  --light-chrome-border: #353535;
+  --light-chrome-text: #c6c6c6;
+  --light-chrome-text-heading: #8d8d8d;
+  --light-chrome-text-active: #ffffff;
+  --light-chrome-overlay: rgb(0 0 0 / 0.5);
+
+  /* ---- Dark palette ---- */
+  --dark-surface-0: #0b0b0b;
+  --dark-surface-1: #161616;
+  --dark-surface-2: #393939;
+  --dark-surface-3: #525252;
+  --dark-text-0: #f4f4f4;
+  --dark-text-1: #c6c6c6;
+  --dark-text-2: #8d8d8d;
+  --dark-accent: #78a9ff;
+  --dark-accent-soft: #78a9ff18;
+  --dark-positive: #42be65;
+  --dark-positive-soft: #0e3a22;
+  --dark-negative: #ff8389;
+  --dark-negative-soft: #3a1618;
+  --dark-warning: #f1c21b;
+  --dark-warning-soft: #3a2f04;
+  --dark-warning-text: #f1c21b;
+  --dark-chrome-bg: #0b0b0b;
+  --dark-chrome-bg-hover: #353535;
+  --dark-chrome-bg-input: #353535;
+  --dark-chrome-border: #393939;
+  --dark-chrome-text: #c6c6c6;
+  --dark-chrome-text-heading: #8d8d8d;
+  --dark-chrome-text-active: #f4f4f4;
+  --dark-chrome-overlay: rgb(0 0 0 / 0.65);
+
+  /* ---- Semantic tokens — default to light palette ---- */
+  --surface-0: var(--light-surface-0);
+  --surface-1: var(--light-surface-1);
+  --surface-2: var(--light-surface-2);
+  --surface-3: var(--light-surface-3);
+  --text-0: var(--light-text-0);
+  --text-1: var(--light-text-1);
+  --text-2: var(--light-text-2);
+  --accent: var(--light-accent);
+  --accent-soft: var(--light-accent-soft);
+  --positive: var(--light-positive);
+  --positive-soft: var(--light-positive-soft);
+  --negative: var(--light-negative);
+  --negative-soft: var(--light-negative-soft);
+  --warning: var(--light-warning);
+  --warning-soft: var(--light-warning-soft);
+  --warning-text: var(--light-warning-text);
+  --chrome-bg: var(--light-chrome-bg);
+  --chrome-bg-hover: var(--light-chrome-bg-hover);
+  --chrome-bg-input: var(--light-chrome-bg-input);
+  --chrome-border: var(--light-chrome-border);
+  --chrome-text: var(--light-chrome-text);
+  --chrome-text-heading: var(--light-chrome-text-heading);
+  --chrome-text-active: var(--light-chrome-text-active);
+  --chrome-overlay: var(--light-chrome-overlay);
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  /* Radius */
+  --radius-s: 0.25rem;
+  --radius-m: 0.5rem;
+  --radius-l: 0.75rem;
+}
+
+/* Dark mode — driven by #theme-toggle checkbox.
+   JS syncs the checkbox to the system preference on load,
+   so CSS only needs this single :has() rule. */
+:root:has(#theme-toggle:checked) {
+  --surface-0: var(--dark-surface-0);
+  --surface-1: var(--dark-surface-1);
+  --surface-2: var(--dark-surface-2);
+  --surface-3: var(--dark-surface-3);
+  --text-0: var(--dark-text-0);
+  --text-1: var(--dark-text-1);
+  --text-2: var(--dark-text-2);
+  --accent: var(--dark-accent);
+  --accent-soft: var(--dark-accent-soft);
+  --positive: var(--dark-positive);
+  --positive-soft: var(--dark-positive-soft);
+  --negative: var(--dark-negative);
+  --negative-soft: var(--dark-negative-soft);
+  --warning: var(--dark-warning);
+  --warning-soft: var(--dark-warning-soft);
+  --warning-text: var(--dark-warning-text);
+  --chrome-bg: var(--dark-chrome-bg);
+  --chrome-bg-hover: var(--dark-chrome-bg-hover);
+  --chrome-bg-input: var(--dark-chrome-bg-input);
+  --chrome-border: var(--dark-chrome-border);
+  --chrome-text: var(--dark-chrome-text);
+  --chrome-text-heading: var(--dark-chrome-text-heading);
+  --chrome-text-active: var(--dark-chrome-text-active);
+  --chrome-overlay: var(--dark-chrome-overlay);
+}
+
+/* Density variants — apply to any container */
+[data-density="compact"]      { --density: 0.75; }
+[data-density="comfortable"]  { --density: 1.25; }
+
+
+/* --------------------------------------------------------------------------
+   2. Responsive Grid Tokens
+   -------------------------------------------------------------------------- */
+
+@media (width >= 42rem) {
+  :root {
+    --grid-columns: 8;
+    --grid-margin: var(--space-2);
+  }
+}
+
+@media (width >= 66rem) {
+  :root {
+    --grid-columns: 16;
+  }
+}
+
+@media (width >= 99rem) {
+  :root {
+    --grid-margin: var(--space-3);
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Base Reset
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-0);
+  background: var(--surface-0);
+  min-height: 100dvh;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Content Grid
+      Use [data-grid] on any element to activate the 2x fluid column grid.
+      Children use [data-span] to control width.
+   -------------------------------------------------------------------------- */
+
+[data-grid] {
+  display: grid;
+  gap: var(--grid-gutter);
+  margin-inline: var(--grid-margin);
+  padding-inline: var(--grid-padding);
+}
+
+[data-grid="fluid"] {
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+}
+
+/* Nested content grids drop outer spacing */
+[data-grid] [data-grid] {
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/* Column spanning via data attribute */
+[data-span="1"]    { grid-column: span 1; }
+[data-span="2"]    { grid-column: span 2; }
+[data-span="3"]    { grid-column: span 3; }
+[data-span="4"]    { grid-column: span 4; }
+[data-span="5"]    { grid-column: span 5; }
+[data-span="6"]    { grid-column: span 6; }
+[data-span="7"]    { grid-column: span 7; }
+[data-span="8"]    { grid-column: span 8; }
+[data-span="9"]    { grid-column: span 9; }
+[data-span="10"]   { grid-column: span 10; }
+[data-span="11"]   { grid-column: span 11; }
+[data-span="12"]   { grid-column: span 12; }
+[data-span="13"]   { grid-column: span 13; }
+[data-span="14"]   { grid-column: span 14; }
+[data-span="15"]   { grid-column: span 15; }
+[data-span="16"]   { grid-column: span 16; }
+[data-span="full"] { grid-column: 1 / -1; }
+
+
+/* --------------------------------------------------------------------------
+   5. Dashboard Shell
+      The page layout uses body-level grid with named areas.
+      :has(dash-board) detects dash-board pages automatically.
+   -------------------------------------------------------------------------- */
+
+body:has(dash-board) {
+  display: grid;
+  grid-template:
+    "header header" auto
+    "nav    main"   1fr
+    / var(--sidebar-width) 1fr;
+}
+
+@media (width < 66rem) {
+  body:has(dash-board) {
+    grid-template:
+      "header" auto
+      "main"   1fr
+      / 1fr;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   6. Header
+      Semantic <header> element — no classes needed.
+   -------------------------------------------------------------------------- */
+
+body > header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--header-height);
+  padding-inline: var(--space-2);
+  background: var(--chrome-bg);
+  color: var(--chrome-text-active);
+  border-block-end: 1px solid var(--chrome-border);
+}
+
+body > header h1 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Spacer pushes trailing items to the end */
+body > header [data-role="spacer"] {
+  flex: 1;
+}
+
+/* Search within header — :has() for focus ring on container */
+body > header search {
+  display: none;
+  flex: 1;
+  max-width: 20rem;
+}
+
+@media (width >= 42rem) {
+  body > header search {
+    display: block;
+  }
+}
+
+body > header search input {
+  width: 100%;
+  height: 2rem;
+  padding-inline: var(--space-2);
+  background: var(--chrome-bg-input);
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  transition: border-color 150ms;
+}
+
+body > header search input::placeholder {
+  color: var(--text-2);
+}
+
+body > header search:has(input:focus) input {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Header navigation */
+body > header nav {
+  display: none;
+}
+
+@media (width >= 42rem) {
+  body > header nav {
+    display: contents;
+  }
+}
+
+body > header nav a {
+  color: var(--chrome-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 150ms;
+}
+
+body > header nav a:hover {
+  color: var(--chrome-text-active);
+}
+
+/* Avatar */
+[data-role="avatar"] {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--surface-1);
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   7. Navigation Sidebar
+      Semantic <nav> element. Hidden on mobile, visible on desktop.
+      Mobile toggle uses :has(#nav-toggle:checked) — no JavaScript.
+   -------------------------------------------------------------------------- */
+
+body > nav {
+  grid-area: nav;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--chrome-bg);
+  overflow-y: auto;
+}
+
+@media (width < 66rem) {
+  body > nav {
+    display: none;
+    position: fixed;
+    inset-block-start: var(--header-height);
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    width: var(--sidebar-width);
+    z-index: 100;
+  }
+
+  /* :has() toggle — checkbox in <header> controls nav visibility */
+  body:has(#nav-toggle:checked) > nav {
+    display: flex;
+  }
+
+  /* Backdrop */
+  body:has(#nav-toggle:checked)::before {
+    content: "";
+    position: fixed;
+    inset-block-start: var(--header-height);
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    background: var(--chrome-overlay);
+    z-index: 99;
+  }
+}
+
+/* Sidebar section headings */
+body > nav [data-role="heading"] {
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--chrome-text-heading);
+}
+
+/* Sidebar links */
+body > nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-s);
+  color: var(--chrome-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: background 120ms, color 120ms;
+}
+
+body > nav a:hover {
+  background: var(--chrome-bg-hover);
+  color: var(--chrome-text-active);
+}
+
+body > nav a[aria-current="page"] {
+  background: var(--chrome-bg-hover);
+  color: var(--chrome-text-active);
+  border-inline-start: 3px solid var(--accent);
+  padding-inline-start: calc(var(--space-2) - 3px);
+}
+
+/* Mobile toggle button */
+[for="nav-toggle"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: inherit;
+}
+
+@media (width >= 66rem) {
+  [for="nav-toggle"] {
+    display: none;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   8. Main Content Area
+      Semantic <main> wraps breadcrumb, page title, and dash-board.
+   -------------------------------------------------------------------------- */
+
+body > main {
+  grid-area: main;
+  overflow-y: auto;
+  align-content: start;
+  padding-block: var(--space-2);
+}
+
+/* Breadcrumb — secondary navigation showing hierarchy.
+   Uses semantic <nav aria-label="Breadcrumb"> with an <ol>. */
+body > main > nav {
+  padding: 0;
+}
+
+body > main > nav ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+
+body > main > nav ol li {
+  display: flex;
+  align-items: center;
+}
+
+body > main > nav ol li + li::before {
+  content: "/";
+  margin-inline: var(--space-1);
+  color: var(--text-2);
+}
+
+body > main > nav ol a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+body > main > nav ol a:hover {
+  text-decoration: underline;
+}
+
+body > main > nav ol li:last-child {
+  color: var(--text-1);
+}
+
+/* Page title — <hgroup> with heading and subtitle. */
+body > main > hgroup {
+  padding: 0;
+}
+
+body > main > hgroup h1 {
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+body > main > hgroup p {
+  font-size: 1rem;
+  color: var(--text-1);
+  margin-block-start: 0.25rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. Dashboard Board
+      Custom element: <dash-board>
+      Explicit column counts per breakpoint — prevents widgets from
+      spanning more columns than exist (which creates invisible tracks).
+      4 columns at the large breakpoint gives finer sizing control:
+      widgets can be 1/4, 1/2, 3/4, or full width via data-span.
+   -------------------------------------------------------------------------- */
+
+dash-board {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+@media (width >= 42rem) {
+  dash-board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 66rem) {
+  dash-board {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   10. Widget
+       Custom element: <dash-widget>
+       Uses container queries so content adapts to available space.
+       Spans are clamped per breakpoint so they never exceed available columns.
+   -------------------------------------------------------------------------- */
+
+dash-widget {
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-2);
+  overflow: hidden;
+
+  &[data-span="2"]    { grid-column: span 2; }
+  &[data-span="3"]    { grid-column: span 3; }
+  &[data-span="4"],
+  &[data-span="5"],
+  &[data-span="6"],
+  &[data-span="full"] { grid-column: 1 / -1; }
+}
+
+/* Small: 1 column — all spans collapse */
+@media (width < 42rem) {
+  dash-widget[data-span] {
+    grid-column: span 1;
+  }
+}
+
+/* Medium: 2 columns — clamp spans above 2 to full row */
+@media (42rem <= width < 66rem) {
+  dash-widget[data-span="3"],
+  dash-widget[data-span="4"],
+  dash-widget[data-span="5"],
+  dash-widget[data-span="6"] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Widget header — semantic <header> inside dash-widget */
+dash-widget > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-block-end: 1px solid var(--surface-2);
+}
+
+dash-widget > header h2 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+/* Widget content area */
+dash-widget > section {
+  padding: var(--space-2);
+}
+
+/* Widget footer */
+dash-widget > footer {
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface-0);
+  font-size: 0.75rem;
+  color: var(--text-2);
+  border-block-start: 1px solid var(--surface-2);
+}
+
+
+/* --------------------------------------------------------------------------
+   10. Metric Display
+       Custom element: <dash-metric>
+       Trend direction via data attribute. Responsive via container query.
+   -------------------------------------------------------------------------- */
+
+dash-metric {
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+}
+
+dash-metric strong {
+  font-size: 2rem;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+dash-metric small {
+  font-size: 0.875rem;
+  color: var(--text-1);
+}
+
+/* Trend indicator — no classes, just data-trend */
+dash-metric[data-trend="up"] small {
+  color: var(--positive);
+}
+
+dash-metric[data-trend="down"] small {
+  color: var(--negative);
+}
+
+/* Compact layout in narrow containers */
+@container (width < 15rem) {
+  dash-metric strong {
+    font-size: 1.5rem;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   11. Metric Group
+       Custom element: <dash-metric-group>
+       Children participate in parent grid via display: contents.
+   -------------------------------------------------------------------------- */
+
+dash-widget:has(dash-metric-group) > section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  align-content: start;
+  gap: var(--space-2);
+}
+
+dash-metric-group {
+  display: contents;
+}
+
+
+/* --------------------------------------------------------------------------
+   12. Chart Container
+       Holds a uPlot canvas chart; sized by JS, themed via CSS tokens.
+   -------------------------------------------------------------------------- */
+
+#revenue-chart {
+  width: 100%;
+  min-height: 200px;
+}
+
+/* Override uPlot defaults to match design tokens */
+#revenue-chart .uplot,
+#revenue-chart .u-wrap {
+  width: 100% !important;
+}
+
+#revenue-chart .u-legend {
+  display: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   13. Activity List
+       Semantic <ol> inside a dash-widget. Event type via data-event attribute.
+   -------------------------------------------------------------------------- */
+
+dash-widget ol {
+  list-style: none;
+  padding: 0;
+}
+
+dash-widget ol li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-1);
+  padding-block: var(--space-1);
+  font-size: 0.875rem;
+}
+
+dash-widget ol li + li {
+  border-block-start: 1px solid var(--surface-2);
+}
+
+/* Event dot — generated from pseudo-element */
+dash-widget ol li::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-block-start: 0.45rem;
+}
+
+dash-widget ol li[data-event="success"]::before { background: var(--positive); }
+dash-widget ol li[data-event="warning"]::before { background: var(--warning); }
+dash-widget ol li[data-event="error"]::before   { background: var(--negative); }
+
+dash-widget ol time {
+  grid-column: 2;
+  font-size: 0.75rem;
+  color: var(--text-2);
+  margin-block-start: 0.125rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   14. Data Table
+       Semantic <table>. Transforms to cards on narrow containers.
+   -------------------------------------------------------------------------- */
+
+dash-widget table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+dash-widget th,
+dash-widget td {
+  padding: var(--space-1) var(--space-2);
+  text-align: start;
+}
+
+dash-widget th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-1);
+  background: var(--surface-0);
+}
+
+dash-widget tr:not(:last-child) td {
+  border-block-end: 1px solid var(--surface-2);
+}
+
+/* Striped rows */
+dash-widget tbody tr:nth-child(even) {
+  background: color-mix(in oklch, var(--surface-0), transparent 50%);
+}
+
+dash-widget tbody tr {
+  transition: background 100ms;
+}
+
+dash-widget tbody tr:hover {
+  background: var(--surface-0);
+}
+
+/* Sortable column indicators — data-sort on <th> */
+dash-widget th[data-sort] {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-inline-end: calc(var(--space-2) + 1rem);
+}
+
+dash-widget th[data-sort]::after {
+  content: "⇕";
+  position: absolute;
+  inset-inline-end: var(--space-2);
+  color: var(--text-2);
+  font-size: 0.75rem;
+}
+
+dash-widget th[data-sort="asc"]::after {
+  content: "▲";
+  color: var(--text-0);
+}
+
+dash-widget th[data-sort="desc"]::after {
+  content: "▼";
+  color: var(--text-0);
+}
+
+dash-widget th[data-sort]:hover {
+  background: var(--surface-2);
+}
+
+/* Responsive: table becomes stacked cards in narrow containers */
+@container (width < 28rem) {
+  dash-widget table,
+  dash-widget thead,
+  dash-widget tbody,
+  dash-widget tr,
+  dash-widget th,
+  dash-widget td {
+    display: block;
+  }
+
+  dash-widget thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  dash-widget tbody tr {
+    padding: var(--space-1) var(--space-2);
+    border-block-end: 1px solid var(--surface-2);
+  }
+
+  dash-widget td {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-1) 0;
+    border: none;
+  }
+
+  dash-widget td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-2);
+    font-size: 0.75rem;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   15. Forms
+       :has() eliminates JavaScript for focus states and validation.
+   -------------------------------------------------------------------------- */
+
+dash-widget form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+dash-widget label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: 0.875rem;
+
+  & > span:first-child {
+    font-weight: 500;
+    color: var(--text-1);
+  }
+}
+
+dash-widget input:not([type="checkbox"]):not([type="radio"]),
+dash-widget select,
+dash-widget textarea {
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-s);
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+dash-widget input:focus,
+dash-widget select:focus,
+dash-widget textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  outline: none;
+}
+
+/* Invalid state — label responds to input state via :has() */
+dash-widget label:has(input:invalid:not(:placeholder-shown)) {
+  & > span:first-child { color: var(--negative); }
+  & input { border-color: var(--negative); }
+}
+
+
+/* --------------------------------------------------------------------------
+   16. Buttons
+       Variants via data-variant attribute. No class soup.
+   -------------------------------------------------------------------------- */
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface-2);
+  border: none;
+  border-radius: var(--radius-s);
+  color: var(--text-0);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms;
+}
+
+button:hover {
+  background: var(--surface-3);
+}
+
+button[data-variant="primary"] {
+  background: var(--accent);
+  color: var(--surface-1);
+}
+
+button[data-variant="primary"]:hover {
+  background: color-mix(in oklch, var(--accent), black 15%);
+}
+
+button[data-variant="ghost"] {
+  background: transparent;
+  color: inherit;
+}
+
+button[data-variant="ghost"]:hover {
+  background: var(--surface-2);
+}
+
+
+/* --------------------------------------------------------------------------
+   17. Status Badges
+       Driven entirely by data-status attribute.
+   -------------------------------------------------------------------------- */
+
+[data-status] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.125rem var(--space-1);
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+[data-status]::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+[data-status="active"]   { background: var(--positive-soft); color: var(--positive); }
+[data-status="pending"]  { background: var(--warning-soft); color: var(--warning-text); }
+[data-status="inactive"] { background: var(--negative-soft); color: var(--negative); }
+
+
+/* --------------------------------------------------------------------------
+   18. Aspect Ratios
+       Standard ratios from the 2x Grid spec, via data attribute.
+   -------------------------------------------------------------------------- */
+
+[data-ratio="1x1"]  { aspect-ratio: 1 / 1; }
+[data-ratio="2x1"]  { aspect-ratio: 2 / 1; }
+[data-ratio="2x3"]  { aspect-ratio: 2 / 3; }
+[data-ratio="3x2"]  { aspect-ratio: 3 / 2; }
+[data-ratio="4x3"]  { aspect-ratio: 4 / 3; }
+[data-ratio="16x9"] { aspect-ratio: 16 / 9; }
+
+
+/* --------------------------------------------------------------------------
+   19. Sparse Utility Attributes
+       Only for genuinely reusable, intent-driven concepts.
+   -------------------------------------------------------------------------- */
+
+[data-text="mono"]  { font-family: var(--font-mono); }
+[data-text="muted"] { color: var(--text-1); }
+[data-text="small"] { font-size: 0.875rem; }
+
+/* Visually hidden — accessible to screen readers, invisible on screen */
+[data-visually-hidden] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   20. Skip Link
+       First focusable element. Hidden until focused.
+   -------------------------------------------------------------------------- */
+
+[data-skip-link] {
+  position: fixed;
+  inset-block-start: -100%;
+  inset-inline-start: var(--space-2);
+  z-index: 200;
+  padding: var(--space-1) var(--space-2);
+  background: var(--accent);
+  color: var(--surface-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-s);
+}
+
+[data-skip-link]:focus {
+  inset-block-start: var(--space-2);
+}
+
+
+/* --------------------------------------------------------------------------
+   21. Focus Visible
+       Consistent keyboard focus ring across all interactive elements.
+   -------------------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Remove the custom outline suppression for inputs — let focus-visible handle it */
+dash-widget input:focus-visible,
+dash-widget select:focus-visible,
+dash-widget textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* --------------------------------------------------------------------------
+   22. Reduced Motion
+       Disable transitions and animations for users who prefer it.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   23. Dialog
+       Native <dialog> element. Opens via .showModal() (minimal JS).
+       Closes via <form method="dialog"> — no JS needed.
+       Styled consistently with dash-widget.
+   -------------------------------------------------------------------------- */
+
+dialog {
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-l);
+  background: var(--surface-1);
+  color: var(--text-0);
+  padding: 0;
+  width: min(32rem, calc(100vw - var(--space-4)));
+  max-height: calc(100dvh - var(--space-6));
+  height: fit-content;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 0.15);
+  overflow: hidden;
+  margin: auto;
+  inset: 0;
+  position: fixed;
+}
+
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+dialog::backdrop {
+  background: var(--chrome-overlay);
+  backdrop-filter: blur(2px);
+}
+
+/* Dialog header */
+dialog > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-block-end: 1px solid var(--surface-2);
+}
+
+dialog > header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+dialog > header button {
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: var(--space-1);
+}
+
+/* Dialog content */
+dialog > section {
+  padding: var(--space-2);
+  overflow-y: auto;
+}
+
+/* Description list inside dialog */
+dialog dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-2);
+  font-size: 0.875rem;
+}
+
+dialog dt {
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+dialog dd {
+  margin: 0;
+}
+
+/* Dialog footer */
+dialog > footer {
+  padding: var(--space-2);
+  border-block-start: 1px solid var(--surface-2);
+  background: var(--surface-0);
+}
+
+dialog > footer form {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+
+/* --------------------------------------------------------------------------
+   24. Date Picker
+       No-JS date picker using radio toggle + :has() to switch between
+       single date and date range modes. Native <input type="date">.
+   -------------------------------------------------------------------------- */
+
+[data-date-picker] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+[data-date-picker] fieldset {
+  display: flex;
+  border: none;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+}
+
+/* Segmented control labels */
+[data-date-picker] fieldset label {
+  padding: 0.125rem var(--space-1);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-1);
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  cursor: pointer;
+}
+
+[data-date-picker] fieldset label:first-of-type {
+  border-radius: var(--radius-s) 0 0 var(--radius-s);
+  border-inline-end: none;
+}
+
+[data-date-picker] fieldset label:last-of-type {
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
+
+/* Active segment — adjacent sibling of checked radio */
+[data-date-picker] fieldset :checked + label {
+  background: var(--accent);
+  color: var(--surface-1);
+  border-color: var(--accent);
+}
+
+/* Date inputs — compact to fit in widget header */
+[data-date-picker] input[type="date"] {
+  padding: 0.125rem var(--space-1);
+  font-size: 0.75rem;
+  font-family: inherit;
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-s);
+  color: inherit;
+  color-scheme: light;
+}
+
+:root:has(#theme-toggle:checked) [data-date-picker] input[type="date"] {
+  color-scheme: dark;
+}
+
+[data-date-picker] input[type="date"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  outline: none;
+}
+
+/* Separator */
+[data-date-separator] {
+  font-size: 0.75rem;
+  color: var(--text-2);
+}
+
+/* Compact apply button */
+[data-date-picker] button {
+  padding: 0.125rem var(--space-1);
+  font-size: 0.75rem;
+}
+
+/* Single mode — hide end date and separator via :has() */
+[data-date-picker]:has(#metrics-single:checked) [data-date-separator],
+[data-date-picker]:has(#metrics-single:checked) [name="date-to"] {
+  display: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   25. Theme Toggle
+       CSS-only light/dark switch. Checkbox + label in header.
+       :has(#theme-toggle:checked) on :root drives all dark tokens.
+   -------------------------------------------------------------------------- */
+
+[data-role="theme-toggle"] {
+  display: inline-flex;
+  align-items: center;
+  width: 2.5rem;
+  height: 1.25rem;
+  background: var(--chrome-bg-hover);
+  border-radius: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0.125rem;
+  transition: background 200ms;
+}
+
+/* Thumb */
+[data-role="theme-toggle"]::before {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  background: var(--chrome-text-active);
+  border-radius: 50%;
+  transition: translate 200ms;
+  translate: 0;
+}
+
+/* Checked — dark mode: slide thumb to right, accent track */
+#theme-toggle:checked + [data-role="theme-toggle"] {
+  background: var(--accent);
+}
+
+#theme-toggle:checked + [data-role="theme-toggle"]::before {
+  translate: 1.25rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   26. Tabs
+       CSS-only tabs using hidden radios + custom elements.
+       Structure: <tab-group> > input[radio] + label + <tab-panel>, …
+       The panel adjacent to the checked radio's label is shown.
+   -------------------------------------------------------------------------- */
+
+tab-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+tab-group > label {
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--text-2);
+  cursor: pointer;
+  border-block-end: 2px solid transparent;
+}
+
+tab-group > label:hover {
+  color: var(--text-0);
+}
+
+/* Active tab — adjacent sibling of checked radio */
+tab-group > :checked + label {
+  font-weight: 600;
+  color: var(--text-0);
+  border-color: var(--accent);
+}
+
+/* Panels: hidden by default, pushed below tab bar via order */
+tab-panel {
+  display: none;
+  order: 99;
+  width: 100%;
+  padding: var(--space-3) 0;
+}
+
+/* Show the panel that directly follows a checked radio + label */
+tab-group > :checked + label + tab-panel {
+  display: block;
+}
+
+
+/* --------------------------------------------------------------------------
+   27. Standalone Forms
+       Generic form layout for pages outside dash-widget contexts.
+       Uses [data-form] to avoid collision with widget-scoped form styles.
+   -------------------------------------------------------------------------- */
+
+[data-form] {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 32rem;
+}
+
+[data-form] hgroup {
+  display: grid;
+  gap: var(--space-1);
+  margin-block-end: var(--space-1);
+}
+
+[data-form] hgroup h1,
+[data-form] hgroup h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+[data-form] hgroup p {
+  font-size: 0.875rem;
+  color: var(--text-1);
+  margin: 0;
+}
+
+[data-form] label {
+  display: grid;
+  gap: 0;
+  font-size: 0.75rem;
+  color: var(--text-2);
+}
+
+[data-form] input:not([type="checkbox"]):not([type="radio"]),
+[data-form] select,
+[data-form] textarea {
+  padding: var(--space-1) 0;
+  background: var(--surface-0);
+  border: none;
+  border-block-end: 1px solid var(--surface-2);
+  border-radius: var(--radius-s) var(--radius-s) 0 0;
+  color: var(--text-0);
+  font: inherit;
+  font-size: 1rem;
+  padding-inline: var(--space-2);
+  padding-block: var(--space-2) var(--space-1);
+  transition: border-color 150ms;
+}
+
+[data-form] input:focus,
+[data-form] select:focus,
+[data-form] textarea:focus {
+  border-color: var(--accent);
+  border-block-end-width: 2px;
+  outline: none;
+}
+
+[data-form] select {
+  appearance: auto;
+}
+
+/* Inline field group — side-by-side fields (e.g. State + ZIP) */
+[data-form] [data-field-row] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+/* Button row */
+[data-form] [data-actions] {
+  display: flex;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+}
+
+[data-form] [data-actions] button {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  font-size: 1rem;
+}
+
+/* Dark variant button for Cancel/secondary actions */
+button[data-variant="dark"] {
+  background: var(--chrome-bg);
+  color: var(--chrome-text-active);
+}
+
+button[data-variant="dark"]:hover {
+  background: var(--chrome-bg-hover);
+}

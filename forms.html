@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forms — IDS-Think</title>
+  <link rel="stylesheet" href="css/think.css">
+  <script src="js/think.js" defer></script>
+</head>
+<body>
+
+  <a href="#main-content" data-skip-link>Skip to content</a>
+
+  <header>
+    <label for="nav-toggle" aria-label="Toggle navigation">&#9776;</label>
+    <input type="checkbox" id="nav-toggle" data-visually-hidden>
+    <h1>IDS-Think</h1>
+    <nav aria-label="Primary">
+      <a href="index.html">Dashboard</a>
+      <a href="#">Analytics</a>
+      <a href="#">Reports</a>
+      <a href="#">Settings</a>
+    </nav>
+    <span data-role="spacer"></span>
+    <search>
+      <input type="search" placeholder="Search reports, metrics, users...">
+    </search>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden>
+    <label for="theme-toggle" data-role="theme-toggle" aria-label="Toggle dark mode"></label>
+    <span data-role="avatar">JD</span>
+  </header>
+
+  <nav aria-label="Sidebar">
+    <span data-role="heading">Navigation</span>
+    <a href="index.html">Dashboard</a>
+    <a href="#">Analytics</a>
+    <a href="#">Customers</a>
+    <a href="#">Products</a>
+    <a href="#">Orders</a>
+    <span data-role="heading">Components</span>
+    <a href="forms.html" aria-current="page">Forms</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="nodes.html">Nodes</a>
+    <span data-role="heading">System</span>
+    <a href="#">Settings</a>
+    <a href="#">Audit Log</a>
+  </nav>
+
+  <main id="main-content" data-grid="fluid">
+
+    <nav aria-label="Breadcrumb" data-span="full">
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Components</a></li>
+        <li>Forms</li>
+      </ol>
+    </nav>
+
+    <hgroup data-span="full">
+      <h1>Forms</h1>
+      <p>Component Demo</p>
+    </hgroup>
+
+    <dash-board data-span="full">
+
+      <!-- Edit Mailing Address — filled-style inputs with underline focus -->
+      <dash-widget data-span="1">
+        <header>
+          <h2>Edit Mailing Address</h2>
+        </header>
+        <section>
+          <form data-form data-form-group="address" data-action="/api/address">
+
+            <hgroup>
+              <h2>Edit mailing address</h2>
+              <p>All fields are required, except where marked optional.</p>
+            </hgroup>
+
+            <label>
+              <span>Street address line 1</span>
+              <input type="text" name="street" value="1400 Burnet Rd." required>
+            </label>
+
+            <label>
+              <span>City</span>
+              <input type="text" name="city" value="Austin" required>
+            </label>
+
+            <div data-field-row>
+              <label>
+                <span>State</span>
+                <input type="text" name="state" value="Texas" required>
+              </label>
+              <label>
+                <span>ZIP</span>
+                <input type="text" name="zip" value="78758" required inputmode="numeric" pattern="[0-9]{5}(-[0-9]{4})?">
+              </label>
+            </div>
+
+            <label>
+              <span>Country</span>
+              <select name="country" required>
+                <option>United States of America</option>
+                <option>Canada</option>
+                <option>United Kingdom</option>
+                <option>Germany</option>
+                <option>France</option>
+                <option>Australia</option>
+              </select>
+            </label>
+
+            <div data-actions>
+              <button data-variant="primary" type="submit">Save</button>
+              <button data-variant="dark" type="reset">Cancel</button>
+            </div>
+
+          </form>
+        </section>
+      </dash-widget>
+
+    </dash-board>
+
+  </main>
+</body>
+</html>

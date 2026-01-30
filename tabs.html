@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tabs — IDS-Think</title>
+  <link rel="stylesheet" href="css/think.css">
+  <script src="js/think.js" defer></script>
+</head>
+<body>
+
+  <a href="#main-content" data-skip-link>Skip to content</a>
+
+  <header>
+    <label for="nav-toggle" aria-label="Toggle navigation">&#9776;</label>
+    <input type="checkbox" id="nav-toggle" data-visually-hidden>
+    <h1>IDS-Think</h1>
+    <nav aria-label="Primary">
+      <a href="index.html">Dashboard</a>
+      <a href="#">Analytics</a>
+      <a href="#">Reports</a>
+      <a href="#">Settings</a>
+    </nav>
+    <span data-role="spacer"></span>
+    <search>
+      <input type="search" placeholder="Search reports, metrics, users...">
+    </search>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden>
+    <label for="theme-toggle" data-role="theme-toggle" aria-label="Toggle dark mode"></label>
+    <span data-role="avatar">JD</span>
+  </header>
+
+  <nav aria-label="Sidebar">
+    <span data-role="heading">Navigation</span>
+    <a href="index.html">Dashboard</a>
+    <a href="#">Analytics</a>
+    <a href="#">Customers</a>
+    <a href="#">Products</a>
+    <a href="#">Orders</a>
+    <span data-role="heading">Components</span>
+    <a href="forms.html">Forms</a>
+    <a href="tabs.html" aria-current="page">Tabs</a>
+    <a href="nodes.html">Nodes</a>
+    <span data-role="heading">System</span>
+    <a href="#">Settings</a>
+    <a href="#">Audit Log</a>
+  </nav>
+
+  <main id="main-content" data-grid="fluid">
+
+    <nav aria-label="Breadcrumb" data-span="full">
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Components</a></li>
+        <li>Tabs</li>
+      </ol>
+    </nav>
+
+    <hgroup data-span="full">
+      <h1>Tabs</h1>
+      <p>Component Demo</p>
+    </hgroup>
+
+    <dash-board data-span="full">
+
+      <!-- Demo 1: Basic tabs -->
+      <dash-widget data-span="full">
+        <header>
+          <h2>Basic Tabs</h2>
+        </header>
+        <section>
+          <tab-group>
+            <input type="radio" name="demo1" id="demo1-tab1" data-visually-hidden checked>
+            <label for="demo1-tab1">Dashboard</label>
+            <tab-panel>
+              <p>Tab Panel 1</p>
+            </tab-panel>
+
+            <input type="radio" name="demo1" id="demo1-tab2" data-visually-hidden>
+            <label for="demo1-tab2">Monitoring</label>
+            <tab-panel>
+              <p>Tab Panel 2 — Monitoring content. System status, uptime graphs, and alert history would appear here.</p>
+            </tab-panel>
+
+            <input type="radio" name="demo1" id="demo1-tab3" data-visually-hidden>
+            <label for="demo1-tab3">Activity</label>
+            <tab-panel>
+              <p>Tab Panel 3 — Activity feed. Recent user actions, audit log entries, and system events.</p>
+            </tab-panel>
+
+            <input type="radio" name="demo1" id="demo1-tab4" data-visually-hidden>
+            <label for="demo1-tab4">Settings</label>
+            <tab-panel>
+              <p>Tab Panel 4 — Configuration options for notifications, integrations, and preferences.</p>
+            </tab-panel>
+          </tab-group>
+        </section>
+        <footer>Tab/Arrow keys to navigate between tabs</footer>
+      </dash-widget>
+
+    </dash-board>
+
+  </main>
+</body>
+</html>
