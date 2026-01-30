@@ -2,6 +2,16 @@
 
 A modern CSS-first UI framework built on semantic HTML, custom elements, and data attributes. No classes, no build step.
 
+## Screenshots
+
+![Dashboard with key metrics, revenue trend chart, recent activity feed, and orders table](screenshots/screen1.png)
+
+![Forms component demo with an address editing form](screenshots/screen2.png)
+
+![CSS-only tabs component demo](screenshots/screen3.png)
+
+![Node Editor — visual API pipeline builder with connected String, API Request, JSON Filter, and JSON Watch nodes](screenshots/screen4.png)
+
 ## Philosophy
 
 - **Semantic HTML as styling hooks** — `<header>`, `<nav>`, `<section>`, `<table>` drive layout directly
