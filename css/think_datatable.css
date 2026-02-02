@@ -67,6 +67,48 @@
   appearance: auto;
 }
 
+/* ================================================================
+   Viewport scroll container & sticky thead
+   ================================================================ */
+
+/* Content area becomes the vertical scroll container.
+   Remove block padding so the sticky thead sits flush — prevents
+   scrolled rows from peeking through above the header. */
+dash-widget[data-datatable] > div {
+  overflow-y: auto;
+  min-height: 0;
+  padding-block: 0;
+}
+
+/* Sticky column headers — stay visible while scrolling tbody */
+dash-widget[data-datatable] thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* ================================================================
+   Virtual scroll spacer rows
+   ================================================================ */
+
+dash-widget[data-datatable] tr[data-vs-spacer] {
+  background: none !important;
+}
+
+dash-widget[data-datatable] tr[data-vs-spacer] td {
+  padding: 0;
+  border: none;
+  line-height: 0;
+}
+
+dash-widget[data-datatable] tr[data-vs-spacer]:hover {
+  background: none !important;
+}
+
+/* ================================================================
+   Responsive — narrow containers
+   ================================================================ */
+
 /* Stack toolbar on narrow containers */
 @container (width < 28rem) {
   [data-datatable] > header {
@@ -88,5 +130,10 @@
   [data-datatable] > header input[type="search"] {
     flex: 1;
     max-width: none;
+  }
+
+  /* Hide virtual scroll spacers in card layout */
+  dash-widget[data-datatable] tr[data-vs-spacer] {
+    display: none;
   }
 }

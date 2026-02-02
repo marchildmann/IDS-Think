@@ -3,6 +3,7 @@
  * Adds fetch, sort, filter, and limit to [data-datatable] widgets.
  * Supports both explicit { columns, rows } and auto-detected JSON formats.
  * Recursively flattens nested objects and summarises nested arrays.
+ * Includes virtual scrolling for large datasets and sticky thead.
  * Keeps think.js untouched — this is a standalone add-on.
  */
 (() => {
@@ -202,7 +203,7 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /*  Rendering                                                          */
+  /*  Rendering helpers                                                  */
   /* ------------------------------------------------------------------ */
 
   function renderCell(col, value) {
@@ -246,8 +247,174 @@
     return html;
   }
 
+  function renderRowsHtml(columns, rows) {
+    var html = "";
+    rows.forEach(function (row) {
+      html += "<tr>";
+      columns.forEach(function (col) {
+        html += "<td" + cellAttrs(col) + ">" + renderCell(col, getValue(row, col.key)) + "</td>";
+      });
+      html += "</tr>";
+    });
+    return html;
+  }
+
   /* ------------------------------------------------------------------ */
-  /*  Main render — applies full pipeline and updates DOM                */
+  /*  Sort column marker (extracted for reuse)                           */
+  /* ------------------------------------------------------------------ */
+
+  function markSortColumn(widget, table) {
+    var s = widget._dt;
+    if (s.sortKey) {
+      var th = table.querySelector('th[data-col-key="' + s.sortKey + '"]');
+      if (th) {
+        th.setAttribute("data-sort", s.sortDir);
+        th.setAttribute("aria-sort", s.sortDir === "asc" ? "ascending" : "descending");
+      }
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Viewport height                                                    */
+  /* ------------------------------------------------------------------ */
+
+  function setupViewportHeight(widget) {
+    var rect = widget.getBoundingClientRect();
+    var available = window.innerHeight - rect.top - 16;
+    var minH = 320; // ~20rem
+    widget.style.height = Math.max(available, minH) + "px";
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Virtual scroll helpers                                             */
+  /* ------------------------------------------------------------------ */
+
+  function measureRowHeight(widget) {
+    var row = widget.querySelector("tbody tr:not([data-vs-spacer])");
+    if (!row) return 38; // fallback
+    return row.getBoundingClientRect().height || 38;
+  }
+
+  function isCardLayout(widget) {
+    var contentDiv = widget.querySelector(":scope > div");
+    return contentDiv && contentDiv.clientWidth < 448;
+  }
+
+  function shouldVirtualScroll(widget, rowCount) {
+    if (isCardLayout(widget)) return false;
+    if (rowCount <= 50) return false;
+    if (!widget._dt.vs.rowHeight) return false;
+    return true;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Full render (standard path for small datasets / first render)      */
+  /* ------------------------------------------------------------------ */
+
+  function renderFull(widget, table, rows) {
+    var s = widget._dt;
+    s.vs.enabled = false;
+
+    table.innerHTML = renderThead(s.columns) + renderTbody(s.columns, rows);
+    markSortColumn(widget, table);
+    bindSortHeaders(widget);
+
+    // Measure row height after first paint for future virtual scrolls
+    if (!s.vs.rowHeight && rows.length > 0) {
+      requestAnimationFrame(function () {
+        s.vs.rowHeight = measureRowHeight(widget);
+        // If we now qualify for virtual scroll, re-render
+        if (shouldVirtualScroll(widget, s.vs.displayRows.length)) {
+          renderVirtual(widget, table, s.vs.displayRows);
+        }
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Virtual render (windowed path for large datasets)                  */
+  /* ------------------------------------------------------------------ */
+
+  function renderVirtual(widget, table, rows) {
+    var s = widget._dt;
+    var vs = s.vs;
+    vs.enabled = true;
+
+    var contentDiv = widget.querySelector(":scope > div");
+    var viewportHeight = contentDiv.clientHeight;
+    var rowHeight = vs.rowHeight;
+
+    vs.visibleCount = Math.ceil(viewportHeight / rowHeight);
+
+    var scrollTop = contentDiv.scrollTop;
+    var rawStart = Math.floor(scrollTop / rowHeight);
+    var start = Math.max(0, rawStart - vs.bufferCount);
+    var end = Math.min(rows.length, rawStart + vs.visibleCount + vs.bufferCount);
+
+    vs.startIndex = start;
+    vs.endIndex = end;
+
+    var topH = start * rowHeight;
+    var bottomH = Math.max(0, (rows.length - end) * rowHeight);
+    var colCount = s.columns.length;
+
+    var tbody = "<tbody>";
+    if (topH > 0) {
+      tbody += '<tr data-vs-spacer><td colspan="' + colCount + '" style="height:' + topH + 'px"></td></tr>';
+    }
+    tbody += renderRowsHtml(s.columns, rows.slice(start, end));
+    if (bottomH > 0) {
+      tbody += '<tr data-vs-spacer><td colspan="' + colCount + '" style="height:' + bottomH + 'px"></td></tr>';
+    }
+    tbody += "</tbody>";
+
+    table.innerHTML = renderThead(s.columns) + tbody;
+    markSortColumn(widget, table);
+    bindSortHeaders(widget);
+  }
+
+  /* Optimised scroll-driven update — only replaces tbody, preserves thead */
+  function renderVirtualUpdate(widget) {
+    var s = widget._dt;
+    var vs = s.vs;
+    if (!vs.enabled) return;
+
+    var rows = vs.displayRows;
+    var table = widget.querySelector("table");
+    var tbody = table.querySelector("tbody");
+    var contentDiv = widget.querySelector(":scope > div");
+
+    var scrollTop = contentDiv.scrollTop;
+    var rowHeight = vs.rowHeight;
+
+    var rawStart = Math.floor(scrollTop / rowHeight);
+    var start = Math.max(0, rawStart - vs.bufferCount);
+    var end = Math.min(rows.length, rawStart + vs.visibleCount + vs.bufferCount);
+
+    // Skip if the visible window hasn't shifted
+    if (start === vs.startIndex && end === vs.endIndex) return;
+
+    vs.startIndex = start;
+    vs.endIndex = end;
+
+    var topH = start * rowHeight;
+    var bottomH = Math.max(0, (rows.length - end) * rowHeight);
+    var colCount = s.columns.length;
+
+    var html = "";
+    if (topH > 0) {
+      html += '<tr data-vs-spacer><td colspan="' + colCount + '" style="height:' + topH + 'px"></td></tr>';
+    }
+    html += renderRowsHtml(s.columns, rows.slice(start, end));
+    if (bottomH > 0) {
+      html += '<tr data-vs-spacer><td colspan="' + colCount + '" style="height:' + bottomH + 'px"></td></tr>';
+    }
+
+    tbody.innerHTML = html;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Main render — applies full pipeline and routes to render path      */
   /* ------------------------------------------------------------------ */
 
   function render(widget) {
@@ -260,17 +427,14 @@
     var sorted = sortRows(filtered, s.sortKey, s.sortDir, s.sortType);
     var limited = sorted.slice(0, s.limit);
 
-    // Rebuild table
-    table.innerHTML = renderThead(s.columns) + renderTbody(s.columns, limited);
+    // Store for virtual scroll
+    s.vs.displayRows = limited;
 
-    // Mark active sort column
-    if (s.sortKey) {
-      var th = table.querySelector('th[data-col-key="' + s.sortKey + '"]');
-      if (th) {
-        th.setAttribute("data-sort", s.sortDir);
-        th.setAttribute("aria-sort", s.sortDir === "asc" ? "ascending" : "descending");
-      }
-    }
+    // Reset scroll position on data change
+    var contentDiv = widget.querySelector(":scope > div");
+    if (contentDiv) contentDiv.scrollTop = 0;
+    s.vs.startIndex = -1;
+    s.vs.endIndex = -1;
 
     // Footer
     if (footer) {
@@ -279,8 +443,12 @@
       footer.textContent = "Showing " + shown + " of " + total + " records";
     }
 
-    // Re-bind sort click handlers on new thead
-    bindSortHeaders(widget);
+    // Route to appropriate render path
+    if (shouldVirtualScroll(widget, limited.length)) {
+      renderVirtual(widget, table, limited);
+    } else {
+      renderFull(widget, table, limited);
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -353,6 +521,22 @@
     }
   }
 
+  function bindScrollHandler(widget) {
+    var contentDiv = widget.querySelector(":scope > div");
+    if (!contentDiv) return;
+
+    contentDiv.addEventListener("scroll", function () {
+      var vs = widget._dt.vs;
+      if (!vs.enabled || vs._rafPending) return;
+
+      vs._rafPending = true;
+      requestAnimationFrame(function () {
+        vs._rafPending = false;
+        renderVirtualUpdate(widget);
+      });
+    }, { passive: true });
+  }
+
   /* ------------------------------------------------------------------ */
   /*  Load URL — fetch JSON and populate the table                       */
   /* ------------------------------------------------------------------ */
@@ -381,6 +565,9 @@
         widget._dt.sortKey = null;
         widget._dt.sortDir = "asc";
         widget._dt.sortType = "text";
+
+        // Force row height re-measurement for new columns
+        widget._dt.vs.rowHeight = 0;
 
         // Clear the filter input
         var filterInput = widget.querySelector("[data-datatable-filter]");
@@ -417,6 +604,16 @@
       sortDir: "asc",
       sortType: "text",
       limit: 10,
+      vs: {
+        enabled: false,
+        rowHeight: 0,
+        visibleCount: 0,
+        bufferCount: 5,
+        startIndex: -1,
+        endIndex: -1,
+        displayRows: [],
+        _rafPending: false,
+      },
     };
 
     // Read initial limit from the select if present
@@ -426,7 +623,25 @@
     }
 
     bindControls(widget);
+    bindScrollHandler(widget);
     loadUrl(widget, src);
+
+    // Set viewport-filling height after first paint
+    requestAnimationFrame(function () {
+      setupViewportHeight(widget);
+    });
+
+    // Recalculate on resize (debounced)
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        setupViewportHeight(widget);
+        // Row height may change if density changed
+        widget._dt.vs.rowHeight = 0;
+        render(widget);
+      }, 150);
+    });
   }
 
   // Boot all datatable widgets
