@@ -1421,6 +1421,18 @@ dialog > footer form {
   display: none;
 }
 
+/* Narrow widget — stack header, let date picker wrap */
+@container (width < 28rem) {
+  dash-widget > header:has([data-date-picker]) {
+    flex-wrap: wrap;
+  }
+
+  [data-date-picker] {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+
 
 /* --------------------------------------------------------------------------
    25. Theme Toggle
