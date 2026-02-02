@@ -6,6 +6,7 @@
   <meta name="description" content="IDS-Think datatable component — sortable, responsive data table with order detail dialog.">
   <title>Datatable — IDS-Think</title>
   <link rel="stylesheet" href="css/think.css">
+  <link rel="stylesheet" href="css/think_datatable.css">
   <script src="js/think.js" defer></script>
   <script src="js/think_datatable.js" defer></script>
 </head>
@@ -75,15 +76,18 @@
 
       <!-- Data Table — fetches JSON, sortable, filterable, paginated.
            Falls back to static rows if JS is disabled. -->
-      <dash-widget data-span="full" data-datatable data-src="data/orders.json">
+      <dash-widget data-span="full" data-datatable data-datatable-remote data-src="https://think.iotdata.systems/data/iot_vending_machines.json">
         <header>
           <h2>Recent Orders</h2>
           <span>
+            <input type="url" data-datatable-url placeholder="Enter JSON URL..." aria-label="Remote JSON URL" value="https://think.iotdata.systems/data/iot_vending_machines.json">
+            <button data-variant="primary" data-datatable-url-load>Load</button>
             <input type="search" data-datatable-filter placeholder="Filter..." aria-label="Filter table">
             <select data-datatable-limit aria-label="Rows per page">
               <option value="10">10 rows</option>
               <option value="50">50 rows</option>
               <option value="100">100 rows</option>
+              <option value="1000">1000 rows</option>
             </select>
             <button data-variant="ghost" data-datatable-export>Export</button>
           </span>
@@ -92,53 +96,51 @@
           <table>
             <thead>
               <tr>
-                <th data-sort="desc" aria-sort="descending">Order</th>
-                <th data-sort>Customer</th>
+                <th data-sort>Order Id</th>
+                <th data-sort>Order Date</th>
+                <th data-sort>Name</th>
+                <th data-sort>Country</th>
+                <th data-sort>Items</th>
+                <th data-sort>Total</th>
+                <th data-sort>Payment Method</th>
                 <th data-sort>Status</th>
-                <th data-sort>Amount</th>
-                <th data-sort>Date</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td data-label="Order">#4841</td>
-                <td data-label="Customer">Acme Corp</td>
-                <td data-label="Status"><span data-status="active">Completed</span></td>
-                <td data-label="Amount" data-text="mono">$2,340.00</td>
-                <td data-label="Date" data-text="muted">Jan 29, 2026</td>
-              </tr>
-              <tr>
-                <td data-label="Order">#4840</td>
-                <td data-label="Customer">Globex Inc</td>
-                <td data-label="Status"><span data-status="pending">Pending</span></td>
-                <td data-label="Amount" data-text="mono">$1,105.50</td>
-                <td data-label="Date" data-text="muted">Jan 28, 2026</td>
-              </tr>
-              <tr>
-                <td data-label="Order">#4839</td>
-                <td data-label="Customer">Initech LLC</td>
-                <td data-label="Status"><span data-status="active">Completed</span></td>
-                <td data-label="Amount" data-text="mono">$890.00</td>
-                <td data-label="Date" data-text="muted">Jan 28, 2026</td>
-              </tr>
-              <tr>
-                <td data-label="Order">#4838</td>
-                <td data-label="Customer">Umbrella Co</td>
+                <td data-label="Order Id">ORD000001</td>
+                <td data-label="Order Date" data-text="muted">Jan 19, 2026</td>
+                <td data-label="Name">James Taylor</td>
+                <td data-label="Country">France</td>
+                <td data-label="Items">1 item</td>
+                <td data-label="Total" data-text="mono">$42.36</td>
+                <td data-label="Payment Method">Credit Card</td>
                 <td data-label="Status"><span data-status="inactive">Cancelled</span></td>
-                <td data-label="Amount" data-text="mono">$3,200.00</td>
-                <td data-label="Date" data-text="muted">Jan 27, 2026</td>
               </tr>
               <tr>
-                <td data-label="Order">#4837</td>
-                <td data-label="Customer">Stark Industries</td>
-                <td data-label="Status"><span data-status="active">Completed</span></td>
-                <td data-label="Amount" data-text="mono">$5,670.00</td>
-                <td data-label="Date" data-text="muted">Jan 27, 2026</td>
+                <td data-label="Order Id">ORD000002</td>
+                <td data-label="Order Date" data-text="muted">Nov 23, 2025</td>
+                <td data-label="Name">David Wilson</td>
+                <td data-label="Country">USA</td>
+                <td data-label="Items">2 items</td>
+                <td data-label="Total" data-text="mono">$1,447.09</td>
+                <td data-label="Payment Method">PayPal</td>
+                <td data-label="Status"><span data-status="pending">Processing</span></td>
+              </tr>
+              <tr>
+                <td data-label="Order Id">ORD000003</td>
+                <td data-label="Order Date" data-text="muted">Jan 15, 2026</td>
+                <td data-label="Name">Sarah Johnson</td>
+                <td data-label="Country">UK</td>
+                <td data-label="Items">3 items</td>
+                <td data-label="Total" data-text="mono">$312.50</td>
+                <td data-label="Payment Method">Debit Card</td>
+                <td data-label="Status"><span data-status="active">Delivered</span></td>
               </tr>
             </tbody>
           </table>
         </div>
-        <footer>5 orders</footer>
+        <footer>3 orders</footer>
       </dash-widget>
 
     </dash-board>

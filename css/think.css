@@ -822,6 +822,7 @@ dash-widget > header h2 {
 /* Widget content area */
 dash-widget > div {
   padding: var(--space-2);
+  overflow-x: auto;
 }
 
 /* Widget footer */
@@ -1074,58 +1075,6 @@ dash-widget td button {
     font-weight: 600;
     color: var(--text-2);
     font-size: 0.75rem;
-  }
-}
-
-
-/* Datatable toolbar — controls in widget header */
-[data-datatable] > header > span {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-[data-datatable] > header input[type="search"] {
-  padding: var(--space-1);
-  max-width: 12rem;
-  background: var(--surface-0);
-  border: 1px solid var(--surface-2);
-  border-radius: var(--radius-s);
-  color: inherit;
-  font: inherit;
-  font-size: 0.75rem;
-}
-
-[data-datatable] > header input[type="search"]:focus {
-  border-color: var(--accent);
-  outline: none;
-}
-
-[data-datatable] > header select {
-  padding: var(--space-1);
-  background: var(--surface-0);
-  border: 1px solid var(--surface-2);
-  border-radius: var(--radius-s);
-  color: inherit;
-  font: inherit;
-  font-size: 0.75rem;
-  appearance: auto;
-}
-
-/* Stack toolbar on narrow containers */
-@container (width < 28rem) {
-  [data-datatable] > header {
-    flex-wrap: wrap;
-  }
-
-  [data-datatable] > header > span {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  [data-datatable] > header input[type="search"] {
-    flex: 1;
-    max-width: none;
   }
 }
 

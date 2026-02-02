@@ -1,0 +1,92 @@
+/**
+ * IDS-Think — Datatable Styles
+ * Toolbar, remote URL controls, filter, select, and responsive overrides
+ * for [data-datatable] widgets.
+ */
+
+/* Datatable toolbar — controls in widget header */
+[data-datatable] > header > span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+/* Remote URL controls — hidden unless data-datatable-remote is set */
+[data-datatable] > header [data-datatable-url],
+[data-datatable] > header [data-datatable-url-load] {
+  display: none;
+}
+
+[data-datatable][data-datatable-remote] > header [data-datatable-url],
+[data-datatable][data-datatable-remote] > header [data-datatable-url-load] {
+  display: inline-flex;
+}
+
+[data-datatable] > header input[type="url"] {
+  flex: 1;
+  min-width: 14rem;
+  padding: var(--space-1);
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-s);
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+[data-datatable] > header input[type="url"]:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+[data-datatable] > header input[type="search"] {
+  padding: var(--space-1);
+  max-width: 12rem;
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-s);
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+[data-datatable] > header input[type="search"]:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+[data-datatable] > header select {
+  padding: var(--space-1);
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-s);
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  appearance: auto;
+}
+
+/* Stack toolbar on narrow containers */
+@container (width < 28rem) {
+  [data-datatable] > header {
+    flex-wrap: wrap;
+  }
+
+  [data-datatable] > header > span {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  /* URL input takes most of the row, Load button fills the rest */
+  [data-datatable] > header input[type="url"] {
+    flex: 1 1 calc(100% - 6rem);
+    min-width: 0;
+  }
+
+  /* Filter expands to fill its row */
+  [data-datatable] > header input[type="search"] {
+    flex: 1;
+    max-width: none;
+  }
+}

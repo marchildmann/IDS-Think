@@ -1,36 +1,16 @@
 {
-  "columns": [
-    { "key": "order",    "label": "Order",    "type": "text" },
-    { "key": "customer", "label": "Customer", "type": "text" },
-    { "key": "status",   "label": "Status",   "type": "status" },
-    { "key": "amount",   "label": "Amount",   "type": "numeric" },
-    { "key": "date",     "label": "Date",     "type": "date" }
-  ],
-  "rows": [
-    { "order": "#4841", "customer": "Acme Corp",          "status": "active:Completed",  "amount": 2340.00,  "date": "2026-01-29" },
-    { "order": "#4840", "customer": "Globex Inc",          "status": "pending:Pending",   "amount": 1105.50,  "date": "2026-01-28" },
-    { "order": "#4839", "customer": "Initech LLC",         "status": "active:Completed",  "amount": 890.00,   "date": "2026-01-28" },
-    { "order": "#4838", "customer": "Umbrella Co",         "status": "inactive:Cancelled","amount": 3200.00,  "date": "2026-01-27" },
-    { "order": "#4837", "customer": "Stark Industries",    "status": "active:Completed",  "amount": 5670.00,  "date": "2026-01-27" },
-    { "order": "#4836", "customer": "Wayne Enterprises",   "status": "active:Completed",  "amount": 12450.00, "date": "2026-01-26" },
-    { "order": "#4835", "customer": "Cyberdyne Systems",   "status": "pending:Pending",   "amount": 780.00,   "date": "2026-01-26" },
-    { "order": "#4834", "customer": "Oscorp Industries",   "status": "active:Completed",  "amount": 4320.00,  "date": "2026-01-25" },
-    { "order": "#4833", "customer": "Soylent Corp",        "status": "inactive:Cancelled","amount": 1560.00,  "date": "2026-01-25" },
-    { "order": "#4832", "customer": "Wonka Industries",    "status": "active:Completed",  "amount": 9870.00,  "date": "2026-01-24" },
-    { "order": "#4831", "customer": "Tyrell Corp",         "status": "pending:Pending",   "amount": 2210.00,  "date": "2026-01-24" },
-    { "order": "#4830", "customer": "Massive Dynamic",     "status": "active:Completed",  "amount": 6540.00,  "date": "2026-01-23" },
-    { "order": "#4829", "customer": "Weyland-Yutani",      "status": "active:Completed",  "amount": 18200.00, "date": "2026-01-23" },
-    { "order": "#4828", "customer": "Gekko & Co",          "status": "inactive:Cancelled","amount": 450.00,   "date": "2026-01-22" },
-    { "order": "#4827", "customer": "Globex Inc",          "status": "active:Completed",  "amount": 3380.00,  "date": "2026-01-22" },
-    { "order": "#4826", "customer": "Initech LLC",         "status": "pending:Pending",   "amount": 1920.00,  "date": "2026-01-21" },
-    { "order": "#4825", "customer": "Acme Corp",           "status": "active:Completed",  "amount": 7100.00,  "date": "2026-01-21" },
-    { "order": "#4824", "customer": "Stark Industries",    "status": "active:Completed",  "amount": 2890.00,  "date": "2026-01-20" },
-    { "order": "#4823", "customer": "Umbrella Co",         "status": "pending:Pending",   "amount": 5430.00,  "date": "2026-01-20" },
-    { "order": "#4822", "customer": "Wayne Enterprises",   "status": "active:Completed",  "amount": 11200.00, "date": "2026-01-19" },
-    { "order": "#4821", "customer": "Cyberdyne Systems",   "status": "inactive:Cancelled","amount": 640.00,   "date": "2026-01-19" },
-    { "order": "#4820", "customer": "Oscorp Industries",   "status": "active:Completed",  "amount": 3750.00,  "date": "2026-01-18" },
-    { "order": "#4819", "customer": "Massive Dynamic",     "status": "pending:Pending",   "amount": 8900.00,  "date": "2026-01-18" },
-    { "order": "#4818", "customer": "Soylent Corp",        "status": "active:Completed",  "amount": 1240.00,  "date": "2026-01-17" },
-    { "order": "#4817", "customer": "Wonka Industries",    "status": "active:Completed",  "amount": 15600.00, "date": "2026-01-17" }
+  "orders": [
+    {"id": "ORD-001", "customer_id": 1, "status": "delivered", "total": 149.99, "items": 3, "created": "2024-01-05", "shipped": "2024-01-06", "delivered": "2024-01-08"},
+    {"id": "ORD-002", "customer_id": 2, "status": "shipped", "total": 89.50, "items": 2, "created": "2024-01-10", "shipped": "2024-01-11", "delivered": null},
+    {"id": "ORD-003", "customer_id": 3, "status": "processing", "total": 234.00, "items": 5, "created": "2024-01-12", "shipped": null, "delivered": null},
+    {"id": "ORD-004", "customer_id": 1, "status": "delivered", "total": 45.99, "items": 1, "created": "2024-01-03", "shipped": "2024-01-04", "delivered": "2024-01-06"},
+    {"id": "ORD-005", "customer_id": 4, "status": "cancelled", "total": 199.99, "items": 2, "created": "2024-01-08", "shipped": null, "delivered": null},
+    {"id": "ORD-006", "customer_id": 5, "status": "pending", "total": 67.50, "items": 3, "created": "2024-01-14", "shipped": null, "delivered": null},
+    {"id": "ORD-007", "customer_id": 2, "status": "delivered", "total": 312.00, "items": 4, "created": "2023-12-20", "shipped": "2023-12-21", "delivered": "2023-12-24"},
+    {"id": "ORD-008", "customer_id": 6, "status": "shipped", "total": 78.25, "items": 2, "created": "2024-01-11", "shipped": "2024-01-13", "delivered": null},
+    {"id": "ORD-009", "customer_id": 7, "status": "processing", "total": 156.80, "items": 3, "created": "2024-01-13", "shipped": null, "delivered": null},
+    {"id": "ORD-010", "customer_id": 8, "status": "delivered", "total": 89.99, "items": 1, "created": "2024-01-02", "shipped": "2024-01-03", "delivered": "2024-01-05"},
+    {"id": "ORD-011", "customer_id": 3, "status": "refunded", "total": 245.00, "items": 2, "created": "2023-12-28", "shipped": "2023-12-29", "delivered": "2024-01-02"},
+    {"id": "ORD-012", "customer_id": 9, "status": "pending", "total": 432.50, "items": 6, "created": "2024-01-15", "shipped": null, "delivered": null}
   ]
 }
