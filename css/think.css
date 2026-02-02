@@ -1344,6 +1344,7 @@ dialog > footer form {
 
 [data-date-picker] fieldset {
   display: flex;
+  align-self: stretch;
   border: none;
   padding: 0;
   margin: 0;
@@ -1352,7 +1353,9 @@ dialog > footer form {
 
 /* Segmented control labels */
 [data-date-picker] fieldset label {
-  padding: 0.125rem var(--space-1);
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--space-1);
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-1);
@@ -1405,9 +1408,10 @@ dialog > footer form {
   color: var(--text-2);
 }
 
-/* Compact apply button */
+/* Compact apply button — stretch to fill row height */
 [data-date-picker] button {
-  padding: 0.125rem var(--space-1);
+  align-self: stretch;
+  padding-inline: var(--space-1);
   font-size: 0.75rem;
 }
 
