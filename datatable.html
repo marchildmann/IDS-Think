@@ -7,6 +7,7 @@
   <title>Datatable — IDS-Think</title>
   <link rel="stylesheet" href="css/think.css">
   <script src="js/think.js" defer></script>
+  <script src="js/think_datatable.js" defer></script>
 </head>
 <body>
 
@@ -72,14 +73,19 @@
 
     <dash-board data-span="full">
 
-      <!-- Data Table — responsive table that becomes stacked cards
-          on narrow containers via @container query and data-label -->
-      <dash-widget data-span="full">
+      <!-- Data Table — fetches JSON, sortable, filterable, paginated.
+           Falls back to static rows if JS is disabled. -->
+      <dash-widget data-span="full" data-datatable data-src="data/orders.json">
         <header>
           <h2>Recent Orders</h2>
           <span>
-            <button data-variant="ghost" onclick="document.getElementById('order-detail').showModal()">View Detail</button>
-            <button data-variant="ghost">Export</button>
+            <input type="search" data-datatable-filter placeholder="Filter..." aria-label="Filter table">
+            <select data-datatable-limit aria-label="Rows per page">
+              <option value="10">10 rows</option>
+              <option value="50">50 rows</option>
+              <option value="100">100 rows</option>
+            </select>
+            <button data-variant="ghost" data-datatable-export>Export</button>
           </span>
         </header>
         <div>
@@ -95,35 +101,35 @@
             </thead>
             <tbody>
               <tr>
-                <td data-label="Order">#4821</td>
+                <td data-label="Order">#4841</td>
                 <td data-label="Customer">Acme Corp</td>
                 <td data-label="Status"><span data-status="active">Completed</span></td>
                 <td data-label="Amount" data-text="mono">$2,340.00</td>
                 <td data-label="Date" data-text="muted">Jan 29, 2026</td>
               </tr>
               <tr>
-                <td data-label="Order">#4820</td>
+                <td data-label="Order">#4840</td>
                 <td data-label="Customer">Globex Inc</td>
                 <td data-label="Status"><span data-status="pending">Pending</span></td>
                 <td data-label="Amount" data-text="mono">$1,105.50</td>
                 <td data-label="Date" data-text="muted">Jan 28, 2026</td>
               </tr>
               <tr>
-                <td data-label="Order">#4819</td>
+                <td data-label="Order">#4839</td>
                 <td data-label="Customer">Initech LLC</td>
                 <td data-label="Status"><span data-status="active">Completed</span></td>
                 <td data-label="Amount" data-text="mono">$890.00</td>
                 <td data-label="Date" data-text="muted">Jan 28, 2026</td>
               </tr>
               <tr>
-                <td data-label="Order">#4818</td>
+                <td data-label="Order">#4838</td>
                 <td data-label="Customer">Umbrella Co</td>
                 <td data-label="Status"><span data-status="inactive">Cancelled</span></td>
                 <td data-label="Amount" data-text="mono">$3,200.00</td>
                 <td data-label="Date" data-text="muted">Jan 27, 2026</td>
               </tr>
               <tr>
-                <td data-label="Order">#4817</td>
+                <td data-label="Order">#4837</td>
                 <td data-label="Customer">Stark Industries</td>
                 <td data-label="Status"><span data-status="active">Completed</span></td>
                 <td data-label="Amount" data-text="mono">$5,670.00</td>
@@ -132,6 +138,7 @@
             </tbody>
           </table>
         </div>
+        <footer>5 orders</footer>
       </dash-widget>
 
     </dash-board>

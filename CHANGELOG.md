@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-02-02
+
+### Datatable Enhancement (`js/think_datatable.js`, `datatable.html`)
+
+- **`think_datatable.js`** — standalone script that enhances any
+  `[data-datatable]` widget with JSON fetch, column sorting, search filter,
+  row limit, and export placeholder. Keeps `think.js` untouched.
+- **JSON fetch** — `data-src` attribute on the widget specifies the URL.
+  JSON format: `{ columns: [...], rows: [...] }` with typed columns
+  (`text`, `numeric`, `date`, `status`).
+- **Column sorting** — click any `th[data-sort]` header to sort. Type-aware
+  comparison: locale for text, numeric for amounts, Date parse for dates.
+  Existing CSS indicators (⇕/▲/▼) work automatically.
+- **Search filter** — `[data-datatable-filter]` input filters all visible
+  columns in real-time.
+- **Row limit** — `[data-datatable-limit]` select shows 10/50/100 rows.
+- **Export button** — `[data-datatable-export]` placeholder (alert for now).
+- **Responsive toolbar** — stacks filter/limit/export on narrow containers
+  via `@container` query.
+- **Progressive enhancement** — static HTML table remains as no-JS fallback.
+- **Demo data** — `data/orders.json` with 25 sample order rows.
+
 ## 2026-01-30
 
 ### Color Themes (`css/think.css`, `js/think.js`)

@@ -1078,6 +1078,58 @@ dash-widget td button {
 }
 
 
+/* Datatable toolbar — controls in widget header */
+[data-datatable] > header > span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+[data-datatable] > header input[type="search"] {
+  padding: var(--space-1);
+  max-width: 12rem;
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-s);
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+[data-datatable] > header input[type="search"]:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+[data-datatable] > header select {
+  padding: var(--space-1);
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-s);
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  appearance: auto;
+}
+
+/* Stack toolbar on narrow containers */
+@container (width < 28rem) {
+  [data-datatable] > header {
+    flex-wrap: wrap;
+  }
+
+  [data-datatable] > header > span {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  [data-datatable] > header input[type="search"] {
+    flex: 1;
+    max-width: none;
+  }
+}
+
+
 /* --------------------------------------------------------------------------
    15. Forms
        :has() eliminates JavaScript for focus states and validation.
