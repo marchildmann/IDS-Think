@@ -2,6 +2,30 @@
 
 ## 2026-02-02
 
+### Datatable: Virtual Scrolling & Sticky Header (`js/think_datatable.js`, `css/think_datatable.css`, `datatable.html`)
+
+- **Viewport-filling layout** — the datatable widget now fills the remaining
+  viewport height. JS measures the widget position on init and resize, sets the
+  height dynamically (min 320px).
+- **Sticky thead** — column headers stay fixed at the top of the scroll area
+  while the table body scrolls, via `position: sticky` on `th` elements.
+- **Virtual scrolling** — for datasets exceeding 50 rows, only visible rows
+  plus a buffer (~30 DOM nodes) are rendered. Spacer `<tr data-vs-spacer>`
+  elements maintain correct scroll height. Scroll-driven updates use
+  `requestAnimationFrame` coalescing and only replace `tbody.innerHTML`.
+- **Row height measurement** — first render uses the full path to measure
+  actual row height via `getBoundingClientRect()`, then auto-upgrades to
+  virtual mode on re-render.
+- **Scroll reset** — filter, sort, and limit changes reset scroll to top and
+  recalculate the virtual window.
+- **Card layout safeguard** — virtual scrolling is disabled and spacer rows
+  are hidden in narrow containers (`@container (width < 28rem)`).
+- **Remote URL input** — `[data-datatable-url]` input + Load button allows
+  loading any JSON URL at runtime. Toggled via `data-datatable-remote`
+  attribute on the widget.
+- **Extracted CSS** — all datatable-specific styles moved from `think.css`
+  to `css/think_datatable.css` to keep the core stylesheet clean.
+
 ### Datatable Enhancement (`js/think_datatable.js`, `datatable.html`)
 
 - **`think_datatable.js`** — standalone script that enhances any

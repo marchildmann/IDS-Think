@@ -825,6 +825,11 @@ dash-widget > div {
   overflow-x: auto;
 }
 
+/* Tables go edge-to-edge — remove content padding when a table is present */
+dash-widget:has(> div > table) > div {
+  padding: 0;
+}
+
 /* Widget footer */
 dash-widget > footer {
   padding: var(--space-1) var(--space-2);

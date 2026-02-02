@@ -71,13 +71,10 @@
    Viewport scroll container & sticky thead
    ================================================================ */
 
-/* Content area becomes the vertical scroll container.
-   Remove block padding so the sticky thead sits flush — prevents
-   scrolled rows from peeking through above the header. */
+/* Content area becomes the vertical scroll container */
 dash-widget[data-datatable] > div {
   overflow-y: auto;
   min-height: 0;
-  padding-block: 0;
 }
 
 /* Sticky column headers — stay visible while scrolling tbody */
