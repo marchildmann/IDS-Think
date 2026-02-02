@@ -230,6 +230,63 @@
   --dark-chrome-overlay: rgb(18 14 10 / 0.65);
 }
 
+/* Rams — functional neutrals, amber accent, restrained palette
+   Inspired by the Dieter Rams / Braun palette:
+   #BF7C2A  #C09C6F  #5F503E  #9C9C9C  #E1E4E1 */
+[data-theme="rams"] {
+  /* ---- Light palette ---- */
+  --light-surface-0: #e1e4e1;
+  --light-surface-1: #eceeed;
+  --light-surface-2: #cacdc9;
+  --light-surface-3: #b0b3af;
+  --light-text-0: #1a1914;
+  --light-text-1: #5f503e;
+  --light-text-2: #9c9c9c;
+  --light-accent: #bf7c2a;
+  --light-accent-soft: #bf7c2a18;
+  --light-positive: #5a7040;
+  --light-positive-soft: #e0e8d0;
+  --light-negative: #a04030;
+  --light-negative-soft: #f0dcd8;
+  --light-warning: #b08c20;
+  --light-warning-soft: #ede4cc;
+  --light-warning-text: #806418;
+  --light-chrome-bg: #1a1914;
+  --light-chrome-bg-hover: #33302a;
+  --light-chrome-bg-input: #33302a;
+  --light-chrome-border: #33302a;
+  --light-chrome-text: #9c9c9c;
+  --light-chrome-text-heading: #6e6e6e;
+  --light-chrome-text-active: #eceeed;
+  --light-chrome-overlay: rgb(26 25 20 / 0.5);
+
+  /* ---- Dark palette ---- */
+  --dark-surface-0: #121110;
+  --dark-surface-1: #1a1914;
+  --dark-surface-2: #3a3630;
+  --dark-surface-3: #5f503e;
+  --dark-text-0: #e1e4e1;
+  --dark-text-1: #b0b3af;
+  --dark-text-2: #7a7870;
+  --dark-accent: #d89a3a;
+  --dark-accent-soft: #d89a3a18;
+  --dark-positive: #80a858;
+  --dark-positive-soft: #242e1a;
+  --dark-negative: #d06050;
+  --dark-negative-soft: #301c18;
+  --dark-warning: #c8a030;
+  --dark-warning-soft: #302810;
+  --dark-warning-text: #c8a030;
+  --dark-chrome-bg: #0e0d0c;
+  --dark-chrome-bg-hover: #33302a;
+  --dark-chrome-bg-input: #33302a;
+  --dark-chrome-border: #3a3630;
+  --dark-chrome-text: #9c9c9c;
+  --dark-chrome-text-heading: #6e6e6e;
+  --dark-chrome-text-active: #e1e4e1;
+  --dark-chrome-overlay: rgb(14 13 12 / 0.65);
+}
+
 /* Density variants — apply to any container */
 [data-density="compact"]      { --density: 0.75; }
 [data-density="comfortable"]  { --density: 1.25; }

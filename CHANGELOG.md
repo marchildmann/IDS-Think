@@ -10,6 +10,9 @@
 - **Mid Century theme** (`data-theme="midcentury"`) — warm earth tones (cream,
   tan, walnut), teal accent, avocado green, terracotta red, and mustard gold.
   Both light and dark palettes included.
+- **Rams theme** (`data-theme="rams"`) — functional neutrals inspired by the
+  Dieter Rams / Braun palette (#BF7C2A, #C09C6F, #5F503E, #9C9C9C, #E1E4E1).
+  Amber accent, muted olive green, restrained warm grays. Light and dark palettes.
 - **Theme selector** — `<select id="color-theme">` added to the header in all
   dashboard pages and the theme-corner in auth pages. Styled for both chrome
   and surface backgrounds.
