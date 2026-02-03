@@ -296,7 +296,7 @@
   }
 
   function isCardLayout(widget) {
-    var contentDiv = widget.querySelector(":scope > div");
+    var contentDiv = widget.querySelector(":scope > .datatable-body > div:first-child");
     return contentDiv && contentDiv.clientWidth < 448;
   }
 
@@ -340,7 +340,7 @@
     var vs = s.vs;
     vs.enabled = true;
 
-    var contentDiv = widget.querySelector(":scope > div");
+    var contentDiv = widget.querySelector(":scope > .datatable-body > div:first-child");
     var viewportHeight = contentDiv.clientHeight;
     var rowHeight = vs.rowHeight;
 
@@ -382,7 +382,7 @@
     var rows = vs.displayRows;
     var table = widget.querySelector("table");
     var tbody = table.querySelector("tbody");
-    var contentDiv = widget.querySelector(":scope > div");
+    var contentDiv = widget.querySelector(":scope > .datatable-body > div:first-child");
 
     var scrollTop = contentDiv.scrollTop;
     var rowHeight = vs.rowHeight;
@@ -431,7 +431,7 @@
     s.vs.displayRows = limited;
 
     // Reset scroll position on data change
-    var contentDiv = widget.querySelector(":scope > div");
+    var contentDiv = widget.querySelector(":scope > .datatable-body > div:first-child");
     if (contentDiv) contentDiv.scrollTop = 0;
     s.vs.startIndex = -1;
     s.vs.endIndex = -1;
@@ -487,7 +487,14 @@
     if (filterInput) {
       filterInput.addEventListener("input", function () {
         widget._dt.filterQuery = this.value;
-        render(widget);
+        // Clear any insight filter when manually filtering
+        if (widget._dt.insightFilterActive) {
+          clearInsightFilter(widget);
+        } else {
+          render(widget);
+        }
+        // Re-run insights if panel is open
+        refreshInsightsIfOpen(widget);
       });
     }
 
@@ -501,6 +508,23 @@
     if (exportBtn) {
       exportBtn.addEventListener("click", function () {
         alert("Export will be available soon.");
+      });
+    }
+
+    // Insights button
+    var insightsBtn = widget.querySelector("[data-datatable-insights-btn]");
+    var insightsPanel = widget.querySelector("[data-datatable-insights]");
+    if (insightsBtn && insightsPanel) {
+      insightsBtn.addEventListener("click", function () {
+        var isOpen = insightsBtn.getAttribute("aria-pressed") === "true";
+        if (isOpen) {
+          insightsBtn.setAttribute("aria-pressed", "false");
+          insightsPanel.removeAttribute("data-visible");
+        } else {
+          insightsBtn.setAttribute("aria-pressed", "true");
+          insightsPanel.setAttribute("data-visible", "");
+          renderInsights(widget);
+        }
       });
     }
 
@@ -522,7 +546,7 @@
   }
 
   function bindScrollHandler(widget) {
-    var contentDiv = widget.querySelector(":scope > div");
+    var contentDiv = widget.querySelector(":scope > .datatable-body > div:first-child");
     if (!contentDiv) return;
 
     contentDiv.addEventListener("scroll", function () {
@@ -585,6 +609,216 @@
         if (footer) footer.textContent = "Failed to load: " + err.message;
         console.warn("Datatable fetch failed:", url, err);
       });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Insights rendering                                                 */
+  /* ------------------------------------------------------------------ */
+
+  // Debounce timer for insight refresh
+  var insightRefreshTimer = null;
+
+  function refreshInsightsIfOpen(widget) {
+    var insightsBtn = widget.querySelector("[data-datatable-insights-btn]");
+    if (insightsBtn && insightsBtn.getAttribute("aria-pressed") === "true") {
+      // Debounce to avoid re-running on every keystroke
+      clearTimeout(insightRefreshTimer);
+      insightRefreshTimer = setTimeout(function () {
+        renderInsights(widget);
+      }, 300);
+    }
+  }
+
+  function renderInsights(widget) {
+    var panel = widget.querySelector("[data-datatable-insights]");
+    var list = panel.querySelector("ul");
+    var summary = panel.querySelector(".insight-summary");
+    var header = panel.querySelector("summary");
+
+    if (!widget._dt || !widget._dt.allRows || !widget._dt.allRows.length) {
+      list.innerHTML = '<li><span class="insight-text">No data loaded</span></li>';
+      summary.textContent = "";
+      return;
+    }
+
+    // Check if ThinkInsights is available
+    if (typeof ThinkInsights === "undefined") {
+      list.innerHTML = '<li><span class="insight-text">Insights engine not loaded</span></li>';
+      summary.textContent = "";
+      return;
+    }
+
+    // Determine which rows to analyze: filtered or all
+    var rowsToAnalyze = widget._dt.allRows;
+    var isFiltered = false;
+
+    if (widget._dt.filterQuery && widget._dt.filterQuery.trim()) {
+      // Apply the same filter as the table display
+      rowsToAnalyze = filterRows(widget._dt.allRows, widget._dt.columns, widget._dt.filterQuery);
+      isFiltered = true;
+    }
+
+    // Update header to show filter status
+    if (header) {
+      header.textContent = isFiltered
+        ? "Insights (" + rowsToAnalyze.length + " filtered)"
+        : "Data Insights";
+    }
+
+    if (rowsToAnalyze.length === 0) {
+      list.innerHTML = '<li><span class="insight-text">No matching records to analyze</span></li>';
+      summary.textContent = "";
+      return;
+    }
+
+    // Generate insights on the relevant data
+    var result = ThinkInsights.analyze(rowsToAnalyze);
+
+    if (!result.insights || !result.insights.length) {
+      list.innerHTML = '<li><span class="insight-text">No significant patterns found</span></li>';
+      summary.textContent = result.summary || "";
+      return;
+    }
+
+    // Store insights for click handling
+    widget._dt.insights = result.insights;
+
+    // Render insight list
+    var html = "";
+    result.insights.forEach(function (insight, idx) {
+      var hasFilter = insight.filter ? ' data-clickable' : '';
+      html += '<li data-type="' + insight.type + '" data-insight-idx="' + idx + '"' + hasFilter + '>';
+      html += '<span class="insight-text">' + insight.narrative + '</span>';
+      if (insight.filter) {
+        html += '<span class="insight-filter-hint">Click to filter</span>';
+      }
+      html += '</li>';
+    });
+    list.innerHTML = html;
+    summary.textContent = result.summary || "";
+
+    // Bind click handlers for filterable insights
+    list.querySelectorAll("li[data-clickable]").forEach(function (li) {
+      li.addEventListener("click", function () {
+        var idx = parseInt(li.getAttribute("data-insight-idx"), 10);
+        var insight = widget._dt.insights[idx];
+        if (insight && insight.filter) {
+          applyInsightFilter(widget, insight.filter, li);
+        }
+      });
+    });
+  }
+
+  function applyInsightFilter(widget, filter, clickedLi) {
+    var s = widget._dt;
+    var panel = widget.querySelector("[data-datatable-insights]");
+    var allLis = panel.querySelectorAll("li[data-clickable]");
+
+    // If this filter is already active, clear it
+    if (clickedLi.hasAttribute("data-active-filter")) {
+      clearInsightFilter(widget);
+      return;
+    }
+
+    // Clear any previous active filter
+    allLis.forEach(function (li) { li.removeAttribute("data-active-filter"); });
+
+    // Mark this one as active
+    clickedLi.setAttribute("data-active-filter", "");
+
+    // Determine base rows: if text filter is active, use filtered rows
+    var baseRows = s.allRows;
+    if (s.filterQuery && s.filterQuery.trim()) {
+      baseRows = filterRows(s.allRows, s.columns, s.filterQuery);
+    }
+
+    // Build filter based on condition type
+    if (filter.condition === "outlier" && filter.indices) {
+      // Show only rows at specific indices (relative to baseRows)
+      var indexSet = new Set(filter.indices);
+      s.insightFilteredRows = baseRows.filter(function (_, idx) {
+        return indexSet.has(idx);
+      });
+    } else if (filter.condition === "equals" && filter.value !== undefined) {
+      // Show rows where column equals value
+      s.insightFilteredRows = baseRows.filter(function (row) {
+        return getValue(row, filter.column) === filter.value;
+      });
+    } else if (filter.condition === "missing") {
+      // Show rows where column is null/empty
+      s.insightFilteredRows = baseRows.filter(function (row) {
+        var val = getValue(row, filter.column);
+        return val == null || val === "" || (typeof val === "string" && !val.trim());
+      });
+    } else if (filter.condition === "duplicate" && filter.values) {
+      // Show rows with duplicate values
+      var dupSet = new Set(filter.values);
+      s.insightFilteredRows = baseRows.filter(function (row) {
+        return dupSet.has(getValue(row, filter.column));
+      });
+    } else if (filter.condition === "top" && filter.indices) {
+      var topSet = new Set(filter.indices);
+      s.insightFilteredRows = baseRows.filter(function (_, idx) {
+        return topSet.has(idx);
+      });
+    } else {
+      // Fallback: no filter
+      s.insightFilteredRows = null;
+      return;
+    }
+
+    // Store original rows and apply filter
+    s.insightFilterActive = true;
+
+    // Re-render with filtered data
+    renderWithInsightFilter(widget);
+  }
+
+  function clearInsightFilter(widget) {
+    var s = widget._dt;
+    var panel = widget.querySelector("[data-datatable-insights]");
+
+    // Clear active state from all insights
+    panel.querySelectorAll("li[data-active-filter]").forEach(function (li) {
+      li.removeAttribute("data-active-filter");
+    });
+
+    s.insightFilterActive = false;
+    s.insightFilteredRows = null;
+
+    // Re-render with all data
+    render(widget);
+  }
+
+  function renderWithInsightFilter(widget) {
+    var s = widget._dt;
+    var table = widget.querySelector("table");
+    var footer = widget.querySelector("footer");
+
+    if (!s.insightFilteredRows) {
+      render(widget);
+      return;
+    }
+
+    var filtered = filterRows(s.insightFilteredRows, s.columns, s.filterQuery);
+    var sorted = sortRows(filtered, s.sortKey, s.sortDir, s.sortType);
+    var limited = sorted.slice(0, s.limit);
+
+    s.vs.displayRows = limited;
+
+    var contentDiv = widget.querySelector(":scope > .datatable-body > div:first-child");
+    if (contentDiv) contentDiv.scrollTop = 0;
+
+    if (footer) {
+      footer.textContent = "Filtered: " + limited.length + " of " + s.insightFilteredRows.length + " matching records (click insight to clear)";
+    }
+
+    // Render rows
+    if (shouldVirtualScroll(widget, limited.length)) {
+      renderVirtual(widget, table, limited);
+    } else {
+      renderFull(widget, table, limited);
+    }
   }
 
   /* ------------------------------------------------------------------ */

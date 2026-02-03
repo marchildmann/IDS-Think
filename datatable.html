@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/think.css">
   <link rel="stylesheet" href="css/think_datatable.css">
   <script src="js/think.js" defer></script>
+  <script src="js/think_insights.js" defer></script>
   <script src="js/think_datatable.js" defer></script>
 </head>
 <body>
@@ -76,7 +77,7 @@
 
       <!-- Data Table — fetches JSON, sortable, filterable, paginated.
            Falls back to static rows if JS is disabled. -->
-      <dash-widget data-span="full" data-datatable data-datatable-remote data-src="https://think.iotdata.systems/data/iot_vending_machines.json">
+      <dash-widget data-span="full" data-datatable data-datatable-remote data-src="https://think.iotdata.systems/data/ecommerce_orders.json">
         <header>
           <h2>Recent Orders</h2>
           <span>
@@ -86,14 +87,16 @@
             <select data-datatable-limit aria-label="Rows per page">
               <option value="10">10 rows</option>
               <option value="50">50 rows</option>
-              <option value="100">100 rows</option>
+              <option value="100" selected>100 rows</option>
               <option value="1000">1000 rows</option>
             </select>
             <button data-variant="ghost" data-datatable-export>Export</button>
+            <button data-variant="ghost" data-datatable-insights-btn aria-pressed="false">Insights</button>
           </span>
         </header>
-        <div>
-          <table>
+        <div class="datatable-body">
+          <div>
+            <table>
             <thead>
               <tr>
                 <th data-sort>Order Id</th>
@@ -139,6 +142,12 @@
               </tr>
             </tbody>
           </table>
+          </div>
+          <div data-datatable-insights aria-live="polite">
+            <summary>Data Insights</summary>
+            <ul></ul>
+            <p class="insight-summary"></p>
+          </div>
         </div>
         <footer>3 orders</footer>
       </dash-widget>

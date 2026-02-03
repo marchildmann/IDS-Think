@@ -4,6 +4,12 @@
  * for [data-datatable] widgets.
  */
 
+/* Datatable widget layout */
+dash-widget[data-datatable] {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Datatable toolbar — controls in widget header */
 [data-datatable] > header > span {
   display: flex;
@@ -103,8 +109,189 @@ dash-widget[data-datatable] tr[data-vs-spacer]:hover {
 }
 
 /* ================================================================
+   Insights Panel — Side Layout
+   ================================================================ */
+
+/* Container for table + insights side by side */
+[data-datatable] .datatable-body {
+  display: flex;
+  gap: var(--space-2);
+  min-height: 0;
+  flex: 1;
+  padding: 0;
+}
+
+[data-datatable] .datatable-body > div:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 0;
+}
+
+[data-datatable-insights] {
+  display: none;
+  width: 20rem;
+  flex-shrink: 0;
+  padding: var(--space-2);
+  background: var(--surface-1);
+  border-left: 1px solid var(--surface-2);
+  font-size: 0.8125rem;
+  overflow-y: auto;
+}
+
+[data-datatable-insights][data-visible] {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-datatable-insights] summary {
+  display: block;
+  font-weight: 600;
+  font-size: 0.6875rem;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-block-end: var(--space-2);
+  padding-block-end: var(--space-1);
+  border-bottom: 1px solid var(--surface-2);
+}
+
+[data-datatable-insights] ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+[data-datatable-insights] li {
+  padding: var(--space-2);
+  background: var(--surface-0);
+  border-radius: var(--radius-s);
+  border-left: 3px solid var(--accent);
+  line-height: 1.5;
+}
+
+[data-datatable-insights] li[data-type="outliers"] {
+  border-left-color: var(--status-inactive, #ef4444);
+}
+
+[data-datatable-insights] li[data-type="trend"] {
+  border-left-color: var(--status-pending, #f59e0b);
+}
+
+[data-datatable-insights] li[data-type="correlation"] {
+  border-left-color: var(--accent, #6366f1);
+}
+
+[data-datatable-insights] li[data-type="group_comparison"] {
+  border-left-color: var(--status-active, #22c55e);
+}
+
+[data-datatable-insights] li[data-type="high_variation"] {
+  border-left-color: var(--status-pending, #f59e0b);
+}
+
+[data-datatable-insights] li[data-type="skewed_distribution"] {
+  border-left-color: #8b5cf6;
+}
+
+[data-datatable-insights] li[data-type="metric_summary"] {
+  border-left-color: #06b6d4;
+}
+
+/* Data quality insights */
+[data-datatable-insights] li[data-type="missing_values"],
+[data-datatable-insights] li[data-type="duplicates"] {
+  border-left-color: var(--status-inactive, #ef4444);
+}
+
+[data-datatable-insights] li[data-type="stale_data"] {
+  border-left-color: var(--status-pending, #f59e0b);
+}
+
+/* Aggregation insights */
+[data-datatable-insights] li[data-type="aggregation_total"] {
+  border-left-color: #06b6d4;
+}
+
+[data-datatable-insights] li[data-type="top_values"] {
+  border-left-color: var(--status-active, #22c55e);
+}
+
+[data-datatable-insights] li[data-type="category_breakdown"] {
+  border-left-color: #8b5cf6;
+}
+
+[data-datatable-insights] .insight-text {
+  line-height: 1.5;
+}
+
+/* Clickable insights */
+[data-datatable-insights] li[data-clickable] {
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.1s;
+}
+
+[data-datatable-insights] li[data-clickable]:hover {
+  background: var(--surface-2);
+}
+
+[data-datatable-insights] li[data-clickable]:hover .insight-filter-hint {
+  opacity: 1;
+}
+
+[data-datatable-insights] li[data-active-filter] {
+  background: var(--accent);
+  color: white;
+  border-left-color: white;
+}
+
+[data-datatable-insights] li[data-active-filter] .insight-filter-hint {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-datatable-insights] .insight-filter-hint {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--text-2);
+  margin-top: var(--space-1);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+[data-datatable-insights] .insight-summary {
+  margin-block-start: var(--space-2);
+  padding-block-start: var(--space-1);
+  border-top: 1px solid var(--surface-2);
+  color: var(--text-2);
+  font-size: 0.75rem;
+}
+
+[data-datatable-insights-btn][aria-pressed="true"] {
+  background: var(--accent);
+  color: white;
+}
+
+/* ================================================================
    Responsive — narrow containers
    ================================================================ */
+
+/* Stack insights below table on narrow containers */
+@container (width < 40rem) {
+  [data-datatable] .datatable-body {
+    flex-direction: column;
+  }
+
+  [data-datatable-insights] {
+    width: auto;
+    max-height: 12rem;
+    border-left: none;
+    border-top: 1px solid var(--surface-2);
+  }
+}
 
 /* Stack toolbar on narrow containers */
 @container (width < 28rem) {
