@@ -1,0 +1,68 @@
+/* ==========================================================================
+   IDS-Think Theme: Mid Century
+   Warm earth tones, teal accent, walnut chrome.
+   Apply via <html data-theme="midcentury">.
+   ========================================================================== */
+
+[data-theme="midcentury"] {
+  /* ---- Theme DNA: hue & chroma pairs ---- */
+  --_surface: 0.02 80;
+  --_text: 0.03 65;
+  --_accent: 0.12 175;
+  --_positive: 0.1 130;
+  --_negative: 0.15 30;
+  --_warning: 0.15 85;
+  --_chrome: 0.03 55;
+
+  /* ---- Light palette ---- */
+  --light-surface-0: oklch(92% var(--_surface));
+  --light-surface-1: oklch(97% 0.01 80);
+  --light-surface-2: oklch(82% 0.03 80);
+  --light-surface-3: oklch(75% 0.04 75);
+  --light-text-0: oklch(20% var(--_chrome));
+  --light-text-1: oklch(45% 0.04 65);
+  --light-text-2: oklch(62% var(--_text));
+  --light-accent: oklch(48% var(--_accent));
+  --light-accent-soft: oklch(94% 0.03 175);
+  --light-positive: oklch(50% var(--_positive));
+  --light-positive-soft: oklch(94% 0.04 130);
+  --light-negative: oklch(50% var(--_negative));
+  --light-negative-soft: oklch(95% 0.03 30);
+  --light-warning: oklch(70% var(--_warning));
+  --light-warning-soft: oklch(95% 0.04 85);
+  --light-warning-text: oklch(48% 0.1 85);
+  --light-chrome-bg: oklch(20% var(--_chrome));
+  --light-chrome-bg-hover: oklch(32% var(--_chrome));
+  --light-chrome-bg-input: oklch(32% var(--_chrome));
+  --light-chrome-border: oklch(32% var(--_chrome));
+  --light-chrome-text: oklch(78% 0.03 75);
+  --light-chrome-text-heading: oklch(55% 0.04 65);
+  --light-chrome-text-active: oklch(97% 0.01 80);
+  --light-chrome-overlay: oklch(20% var(--_chrome) / 0.5);
+
+  /* ---- Dark palette (inverted lightness) ---- */
+  --dark-surface-0: oklch(12% var(--_chrome));
+  --dark-surface-1: oklch(20% var(--_chrome));
+  --dark-surface-2: oklch(35% 0.04 60);
+  --dark-surface-3: oklch(45% 0.04 65);
+  --dark-text-0: oklch(92% var(--_surface));
+  --dark-text-1: oklch(78% 0.03 75);
+  --dark-text-2: oklch(55% 0.04 65);
+  --dark-accent: oklch(72% 0.1 175);
+  --dark-accent-soft: oklch(28% 0.04 175);
+  --dark-positive: oklch(68% 0.12 130);
+  --dark-positive-soft: oklch(28% 0.05 130);
+  --dark-negative: oklch(65% var(--_negative));
+  --dark-negative-soft: oklch(25% 0.04 30);
+  --dark-warning: oklch(78% 0.14 90);
+  --dark-warning-soft: oklch(28% 0.05 90);
+  --dark-warning-text: oklch(78% 0.14 90);
+  --dark-chrome-bg: oklch(10% var(--_chrome));
+  --dark-chrome-bg-hover: oklch(32% var(--_chrome));
+  --dark-chrome-bg-input: oklch(32% var(--_chrome));
+  --dark-chrome-border: oklch(35% 0.04 60);
+  --dark-chrome-text: oklch(78% 0.03 75);
+  --dark-chrome-text-heading: oklch(55% 0.04 65);
+  --dark-chrome-text-active: oklch(92% var(--_surface));
+  --dark-chrome-overlay: oklch(10% var(--_chrome) / 0.65);
+}

@@ -1,0 +1,69 @@
+/* ==========================================================================
+   IDS-Think Theme: Rams
+   Functional neutrals, amber accent, restrained palette.
+   Inspired by the Dieter Rams / Braun aesthetic.
+   Apply via <html data-theme="rams">.
+   ========================================================================== */
+
+[data-theme="rams"] {
+  /* ---- Theme DNA: hue & chroma pairs ---- */
+  --_surface: 0 0;       /* pure neutral - no tint */
+  --_text: 0 0;          /* pure neutral */
+  --_accent: 0.14 65;    /* amber - the hero color */
+  --_positive: 0.1 145;  /* muted green */
+  --_negative: 0.12 25;  /* muted red */
+  --_warning: 0.14 65;   /* same as accent */
+  --_chrome: 0 0;        /* pure neutral */
+
+  /* ---- Light palette ---- */
+  --light-surface-0: oklch(95% var(--_surface));
+  --light-surface-1: oklch(99% var(--_surface));
+  --light-surface-2: oklch(88% var(--_surface));
+  --light-surface-3: oklch(78% var(--_surface));
+  --light-text-0: oklch(20% var(--_text));
+  --light-text-1: oklch(45% var(--_text));
+  --light-text-2: oklch(60% var(--_text));
+  --light-accent: oklch(58% var(--_accent));
+  --light-accent-soft: oklch(95% 0.03 65);
+  --light-positive: oklch(45% var(--_positive));
+  --light-positive-soft: oklch(95% 0.03 145);
+  --light-negative: oklch(50% var(--_negative));
+  --light-negative-soft: oklch(95% 0.02 25);
+  --light-warning: oklch(58% var(--_warning));
+  --light-warning-soft: oklch(95% 0.03 65);
+  --light-warning-text: oklch(45% 0.1 65);
+  --light-chrome-bg: oklch(18% var(--_chrome));
+  --light-chrome-bg-hover: oklch(28% var(--_chrome));
+  --light-chrome-bg-input: oklch(28% var(--_chrome));
+  --light-chrome-border: oklch(28% var(--_chrome));
+  --light-chrome-text: oklch(70% var(--_chrome));
+  --light-chrome-text-heading: oklch(55% var(--_chrome));
+  --light-chrome-text-active: oklch(98% var(--_surface));
+  --light-chrome-overlay: oklch(0% var(--_chrome) / 0.5);
+
+  /* ---- Dark palette (inverted lightness) ---- */
+  --dark-surface-0: oklch(12% var(--_chrome));
+  --dark-surface-1: oklch(15% var(--_text));
+  --dark-surface-2: oklch(28% var(--_chrome));
+  --dark-surface-3: oklch(40% var(--_chrome));
+  --dark-text-0: oklch(91% var(--_surface));
+  --dark-text-1: oklch(74% var(--_surface));
+  --dark-text-2: oklch(52% var(--_chrome));
+  --dark-accent: oklch(72% var(--_accent));
+  --dark-accent-soft: oklch(22% 0.04 65);
+  --dark-positive: oklch(65% var(--_positive));
+  --dark-positive-soft: oklch(22% 0.05 130);
+  --dark-negative: oklch(62% var(--_negative));
+  --dark-negative-soft: oklch(20% 0.04 25);
+  --dark-warning: oklch(72% var(--_warning));
+  --dark-warning-soft: oklch(22% 0.05 85);
+  --dark-warning-text: oklch(72% var(--_warning));
+  --dark-chrome-bg: oklch(10% var(--_chrome));
+  --dark-chrome-bg-hover: oklch(27% var(--_chrome));
+  --dark-chrome-bg-input: oklch(27% var(--_chrome));
+  --dark-chrome-border: oklch(28% var(--_chrome));
+  --dark-chrome-text: oklch(65% 0 0);
+  --dark-chrome-text-heading: oklch(50% 0 0);
+  --dark-chrome-text-active: oklch(91% var(--_surface));
+  --dark-chrome-overlay: oklch(10% var(--_chrome) / 0.65);
+}

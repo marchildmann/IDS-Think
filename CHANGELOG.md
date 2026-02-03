@@ -1,5 +1,63 @@
 # Changelog
 
+## 2026-02-03
+
+### Modern CSS Improvements (`css/think.css`)
+
+Based on modern CSS best practices:
+
+- **`@layer` declarations** — added explicit layer ordering
+  (`@layer reset, tokens, layout, components, utilities;`) for predictable
+  specificity control. Each section wrapped in its respective layer.
+
+- **OKLCH color space** — converted all hex colors to OKLCH for perceptual
+  uniformity. Example: `#0f62fe` → `oklch(52% 0.25 264)`.
+
+- **Fluid typography** — added clamp()-based type scale that smoothly scales
+  between 320px and 1200px viewports:
+  - `--text-xs` through `--text-3xl` (11px–40px range)
+  - Applied to headings and metric displays
+
+- **`@starting-style` for dialogs** — native entrance animations for `<dialog>`
+  elements. Dialogs fade in with subtle translate and scale; backdrop fades
+  with blur. No JavaScript required.
+
+- **`ch` units** — content-aware widths for search input (`max-width: 40ch`),
+  dialogs (`width: min(65ch, ...)`), and forms (`max-width: 65ch`).
+
+### Theme DNA Pattern (`css/think.css`, `css/themes/*.css`)
+
+- **Shared hue/chroma variables** — themes now define "DNA" variables
+  (`--_surface`, `--_text`, `--_accent`, `--_positive`, `--_negative`,
+  `--_warning`, `--_chrome`) that store chroma and hue pairs. Both light and
+  dark palettes reference these with only lightness varying.
+
+- **Reduced duplication** — the pattern makes the relationship between light
+  and dark modes explicit and reduces repetition when creating new themes.
+
+### External Theme Files (`css/themes/`)
+
+- **Themes extracted** — midcentury and rams themes moved from `think.css` to
+  separate files for independent caching and on-demand loading:
+  - `css/themes/midcentury.css` — warm earth tones, teal accent, walnut chrome
+  - `css/themes/rams.css` — functional neutrals, amber accent
+
+- **Loading pattern** — themes loaded via separate `<link>` tags:
+  ```html
+  <link rel="stylesheet" href="css/think.css">
+  <link rel="stylesheet" href="css/themes/rams.css">
+  ```
+
+### Rams Theme Fixes (`css/themes/rams.css`)
+
+- **Pure neutral surfaces** — removed greenish tint (hue 145) from surfaces
+  that made light mode look "dirty". Now uses `0 0` (pure neutral) for
+  `--_surface`, `--_text`, and `--_chrome`.
+
+- **Cleaner contrast** — adjusted lightness values (99% cards, 95% background)
+  for crisp white/gray surfaces with amber as the singular accent color,
+  true to Dieter Rams' functional aesthetic.
+
 ## 2026-02-02
 
 ### Datatable: Virtual Scrolling & Sticky Header (`js/think_datatable.js`, `css/think_datatable.css`, `datatable.html`)

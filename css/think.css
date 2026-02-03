@@ -9,6 +9,8 @@
      - Container queries for self-aware widgets
      - :has() to eliminate JavaScript where possible
      - Density variable for proportional spacing control
+     - OKLCH color space for perceptual uniformity
+     - @layer for explicit specificity control
 
    Breakpoints (from 2x Grid spec):
      sm   (default)  — 320px / 20rem  — 4 columns
@@ -18,10 +20,15 @@
      max              — 1584px / 99rem — 16 columns
    ========================================================================== */
 
+/* Layer order — lowest to highest specificity */
+@layer reset, tokens, layout, components, utilities;
+
 
 /* --------------------------------------------------------------------------
    1. Design Tokens
    -------------------------------------------------------------------------- */
+
+@layer tokens {
 
 :root {
   /* Density: one property scales all spacing proportionally.
@@ -50,57 +57,66 @@
   --header-height: 3rem;
   --widget-min: 20rem;
 
-  /* ---- Light palette ---- */
-  --light-surface-0: #f4f4f4;
-  --light-surface-1: #ffffff;
-  --light-surface-2: #e0e0e0;
-  --light-surface-3: #c6c6c6;
-  --light-text-0: #161616;
-  --light-text-1: #525252;
-  --light-text-2: #8d8d8d;
-  --light-accent: #0f62fe;
-  --light-accent-soft: #0f62fe18;
-  --light-positive: #198038;
-  --light-positive-soft: #defbe6;
-  --light-negative: #da1e28;
-  --light-negative-soft: #fff1f1;
-  --light-warning: #f1c21b;
-  --light-warning-soft: #fff8e1;
-  --light-warning-text: #8a6d3b;
-  --light-chrome-bg: #161616;
-  --light-chrome-bg-hover: #353535;
-  --light-chrome-bg-input: #353535;
-  --light-chrome-border: #353535;
-  --light-chrome-text: #c6c6c6;
-  --light-chrome-text-heading: #8d8d8d;
-  --light-chrome-text-active: #ffffff;
-  --light-chrome-overlay: rgb(0 0 0 / 0.5);
+  /* ---- Theme DNA: hue & chroma pairs (neutral default) ---- */
+  --_surface: 0 0;
+  --_text: 0 0;
+  --_accent: 0.25 264;
+  --_positive: 0.13 150;
+  --_negative: 0.22 27;
+  --_warning: 0.16 90;
+  --_chrome: 0 0;
 
-  /* ---- Dark palette ---- */
-  --dark-surface-0: #0b0b0b;
-  --dark-surface-1: #161616;
-  --dark-surface-2: #393939;
-  --dark-surface-3: #525252;
-  --dark-text-0: #f4f4f4;
-  --dark-text-1: #c6c6c6;
-  --dark-text-2: #8d8d8d;
-  --dark-accent: #78a9ff;
-  --dark-accent-soft: #78a9ff18;
-  --dark-positive: #42be65;
-  --dark-positive-soft: #0e3a22;
-  --dark-negative: #ff8389;
-  --dark-negative-soft: #3a1618;
-  --dark-warning: #f1c21b;
-  --dark-warning-soft: #3a2f04;
-  --dark-warning-text: #f1c21b;
-  --dark-chrome-bg: #0b0b0b;
-  --dark-chrome-bg-hover: #353535;
-  --dark-chrome-bg-input: #353535;
-  --dark-chrome-border: #393939;
-  --dark-chrome-text: #c6c6c6;
-  --dark-chrome-text-heading: #8d8d8d;
-  --dark-chrome-text-active: #f4f4f4;
-  --dark-chrome-overlay: rgb(0 0 0 / 0.65);
+  /* ---- Light palette (derived from theme DNA) ---- */
+  --light-surface-0: oklch(96% var(--_surface));
+  --light-surface-1: oklch(100% var(--_surface));
+  --light-surface-2: oklch(90% var(--_surface));
+  --light-surface-3: oklch(81% var(--_surface));
+  --light-text-0: oklch(15% var(--_text));
+  --light-text-1: oklch(40% var(--_text));
+  --light-text-2: oklch(62% var(--_text));
+  --light-accent: oklch(52% var(--_accent));  /* #0f62fe */
+  --light-accent-soft: oklch(95% 0.03 264);
+  --light-positive: oklch(44% var(--_positive));
+  --light-positive-soft: oklch(95% 0.04 150);
+  --light-negative: oklch(53% var(--_negative));
+  --light-negative-soft: oklch(96% 0.02 25);
+  --light-warning: oklch(82% var(--_warning));
+  --light-warning-soft: oklch(97% 0.04 90);
+  --light-warning-text: oklch(50% 0.1 85);
+  --light-chrome-bg: oklch(15% var(--_chrome));
+  --light-chrome-bg-hover: oklch(27% var(--_chrome));
+  --light-chrome-bg-input: oklch(27% var(--_chrome));
+  --light-chrome-border: oklch(27% var(--_chrome));
+  --light-chrome-text: oklch(81% var(--_chrome));
+  --light-chrome-text-heading: oklch(62% var(--_chrome));
+  --light-chrome-text-active: oklch(100% var(--_surface));
+  --light-chrome-overlay: oklch(0% var(--_chrome) / 0.5);
+
+  /* ---- Dark palette (inverted lightness from theme DNA) ---- */
+  --dark-surface-0: oklch(10% var(--_chrome));
+  --dark-surface-1: oklch(15% var(--_chrome));
+  --dark-surface-2: oklch(30% var(--_chrome));
+  --dark-surface-3: oklch(40% var(--_chrome));
+  --dark-text-0: oklch(96% var(--_surface));
+  --dark-text-1: oklch(81% var(--_surface));
+  --dark-text-2: oklch(62% var(--_text));
+  --dark-accent: oklch(70% 0.15 260);
+  --dark-accent-soft: oklch(25% 0.04 260);
+  --dark-positive: oklch(65% 0.15 150);
+  --dark-positive-soft: oklch(25% 0.05 150);
+  --dark-negative: oklch(70% 0.18 25);
+  --dark-negative-soft: oklch(22% 0.04 25);
+  --dark-warning: oklch(82% var(--_warning));
+  --dark-warning-soft: oklch(25% 0.05 90);
+  --dark-warning-text: oklch(82% var(--_warning));
+  --dark-chrome-bg: oklch(10% var(--_chrome));
+  --dark-chrome-bg-hover: oklch(27% var(--_chrome));
+  --dark-chrome-bg-input: oklch(27% var(--_chrome));
+  --dark-chrome-border: oklch(30% var(--_chrome));
+  --dark-chrome-text: oklch(81% var(--_chrome));
+  --dark-chrome-text-heading: oklch(62% var(--_chrome));
+  --dark-chrome-text-active: oklch(96% var(--_surface));
+  --dark-chrome-overlay: oklch(0% var(--_chrome) / 0.65);
 
   /* ---- Semantic tokens — default to light palette ---- */
   --surface-0: var(--light-surface-0);
@@ -128,9 +144,19 @@
   --chrome-text-active: var(--light-chrome-text-active);
   --chrome-overlay: var(--light-chrome-overlay);
 
-  /* Typography */
+  /* Typography — fluid scale using clamp() */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  /* Fluid type scale: clamp(min, preferred, max)
+     Scales smoothly between 320px and 1200px viewport width */
+  --text-xs: clamp(0.6875rem, 0.65rem + 0.1vw, 0.75rem);      /* 11-12px */
+  --text-sm: clamp(0.8125rem, 0.775rem + 0.15vw, 0.875rem);   /* 13-14px */
+  --text-base: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);       /* 15-16px */
+  --text-lg: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);       /* 17-18px */
+  --text-xl: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);         /* 20-24px */
+  --text-2xl: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);        /* 24-30px */
+  --text-3xl: clamp(1.875rem, 1.6rem + 1.1vw, 2.5rem);        /* 30-40px */
 
   /* Radius */
   --radius-s: 0.25rem;
@@ -170,122 +196,11 @@
 
 /* --------------------------------------------------------------------------
    Color Themes
-   Each theme redefines the --light-* and --dark-* palette variables.
-   The light/dark toggle continues to work automatically.
-   Apply via <html data-theme="midcentury">.
+   Load additional themes via separate CSS files:
+     <link rel="stylesheet" href="css/themes/midcentury.css">
+     <link rel="stylesheet" href="css/themes/rams.css">
+   Apply via <html data-theme="midcentury"> or <html data-theme="rams">.
    -------------------------------------------------------------------------- */
-
-/* Mid Century — warm earth tones, teal accent, walnut chrome */
-[data-theme="midcentury"] {
-  /* ---- Light palette ---- */
-  --light-surface-0: #ede6d6;
-  --light-surface-1: #f8f4ec;
-  --light-surface-2: #d2c5ab;
-  --light-surface-3: #bfb099;
-  --light-text-0: #2b2118;
-  --light-text-1: #665847;
-  --light-text-2: #998a78;
-  --light-accent: #0e7c6b;
-  --light-accent-soft: #0e7c6b18;
-  --light-positive: #5a7a38;
-  --light-positive-soft: #e6efd6;
-  --light-negative: #b84530;
-  --light-negative-soft: #f5e4df;
-  --light-warning: #c49208;
-  --light-warning-soft: #f8f0d4;
-  --light-warning-text: #806010;
-  --light-chrome-bg: #2b2118;
-  --light-chrome-bg-hover: #44342a;
-  --light-chrome-bg-input: #44342a;
-  --light-chrome-border: #44342a;
-  --light-chrome-text: #c4b59a;
-  --light-chrome-text-heading: #8a7a62;
-  --light-chrome-text-active: #f8f4ec;
-  --light-chrome-overlay: rgb(43 33 24 / 0.5);
-
-  /* ---- Dark palette ---- */
-  --dark-surface-0: #181210;
-  --dark-surface-1: #2b2118;
-  --dark-surface-2: #4d3d30;
-  --dark-surface-3: #665847;
-  --dark-text-0: #ede6d6;
-  --dark-text-1: #c4b59a;
-  --dark-text-2: #8a7a62;
-  --dark-accent: #40bfaa;
-  --dark-accent-soft: #40bfaa18;
-  --dark-positive: #88b85c;
-  --dark-positive-soft: #283820;
-  --dark-negative: #e0785e;
-  --dark-negative-soft: #3a201a;
-  --dark-warning: #deb830;
-  --dark-warning-soft: #383010;
-  --dark-warning-text: #deb830;
-  --dark-chrome-bg: #120e0a;
-  --dark-chrome-bg-hover: #44342a;
-  --dark-chrome-bg-input: #44342a;
-  --dark-chrome-border: #4d3d30;
-  --dark-chrome-text: #c4b59a;
-  --dark-chrome-text-heading: #8a7a62;
-  --dark-chrome-text-active: #ede6d6;
-  --dark-chrome-overlay: rgb(18 14 10 / 0.65);
-}
-
-/* Rams — functional neutrals, amber accent, restrained palette
-   Inspired by the Dieter Rams / Braun palette:
-   #BF7C2A  #C09C6F  #5F503E  #9C9C9C  #E1E4E1 */
-[data-theme="rams"] {
-  /* ---- Light palette ---- */
-  --light-surface-0: #e1e4e1;
-  --light-surface-1: #eceeed;
-  --light-surface-2: #cacdc9;
-  --light-surface-3: #b0b3af;
-  --light-text-0: #1a1914;
-  --light-text-1: #5f503e;
-  --light-text-2: #9c9c9c;
-  --light-accent: #bf7c2a;
-  --light-accent-soft: #bf7c2a18;
-  --light-positive: #5a7040;
-  --light-positive-soft: #e0e8d0;
-  --light-negative: #a04030;
-  --light-negative-soft: #f0dcd8;
-  --light-warning: #b08c20;
-  --light-warning-soft: #ede4cc;
-  --light-warning-text: #806418;
-  --light-chrome-bg: #1a1914;
-  --light-chrome-bg-hover: #33302a;
-  --light-chrome-bg-input: #33302a;
-  --light-chrome-border: #33302a;
-  --light-chrome-text: #9c9c9c;
-  --light-chrome-text-heading: #6e6e6e;
-  --light-chrome-text-active: #eceeed;
-  --light-chrome-overlay: rgb(26 25 20 / 0.5);
-
-  /* ---- Dark palette ---- */
-  --dark-surface-0: #121110;
-  --dark-surface-1: #1a1914;
-  --dark-surface-2: #3a3630;
-  --dark-surface-3: #5f503e;
-  --dark-text-0: #e1e4e1;
-  --dark-text-1: #b0b3af;
-  --dark-text-2: #7a7870;
-  --dark-accent: #d89a3a;
-  --dark-accent-soft: #d89a3a18;
-  --dark-positive: #80a858;
-  --dark-positive-soft: #242e1a;
-  --dark-negative: #d06050;
-  --dark-negative-soft: #301c18;
-  --dark-warning: #c8a030;
-  --dark-warning-soft: #302810;
-  --dark-warning-text: #c8a030;
-  --dark-chrome-bg: #0e0d0c;
-  --dark-chrome-bg-hover: #33302a;
-  --dark-chrome-bg-input: #33302a;
-  --dark-chrome-border: #3a3630;
-  --dark-chrome-text: #9c9c9c;
-  --dark-chrome-text-heading: #6e6e6e;
-  --dark-chrome-text-active: #e1e4e1;
-  --dark-chrome-overlay: rgb(14 13 12 / 0.65);
-}
 
 /* Density variants — apply to any container */
 [data-density="compact"]      { --density: 0.75; }
@@ -315,10 +230,14 @@
   }
 }
 
+} /* end @layer tokens */
+
 
 /* --------------------------------------------------------------------------
    3. Base Reset
    -------------------------------------------------------------------------- */
+
+@layer reset {
 
 *,
 *::before,
@@ -329,12 +248,14 @@
 
 body {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: var(--text-base);
   line-height: 1.5;
   color: var(--text-0);
   background: var(--surface-0);
   min-height: 100dvh;
 }
+
+} /* end @layer reset */
 
 
 /* --------------------------------------------------------------------------
@@ -342,6 +263,8 @@ body {
       Use [data-grid] on any element to activate the 2x fluid column grid.
       Children use [data-span] to control width.
    -------------------------------------------------------------------------- */
+
+@layer layout {
 
 [data-grid] {
   display: grid;
@@ -473,7 +396,7 @@ body > header [data-role="spacer"] {
 body > header search {
   display: none;
   flex: 1;
-  max-width: 20rem;
+  max-width: 40ch;  /* Content-aware width based on character count */
 }
 
 @media (width >= 42rem) {
@@ -722,16 +645,18 @@ body > main > hgroup {
 }
 
 body > main > hgroup h1 {
-  font-size: 1.75rem;
+  font-size: var(--text-xl);
   font-weight: 400;
   line-height: 1.2;
 }
 
 body > main > hgroup p {
-  font-size: 1rem;
+  font-size: var(--text-base);
   color: var(--text-1);
   margin-block-start: 0.25rem;
 }
+
+} /* end @layer layout */
 
 
 /* --------------------------------------------------------------------------
@@ -742,6 +667,8 @@ body > main > hgroup p {
       4 columns at the large breakpoint gives finer sizing control:
       widgets can be 1/4, 1/2, 3/4, or full width via data-span.
    -------------------------------------------------------------------------- */
+
+@layer components {
 
 dash-board {
   display: grid;
@@ -853,14 +780,14 @@ dash-metric {
 }
 
 dash-metric strong {
-  font-size: 2rem;
+  font-size: var(--text-2xl);
   font-weight: 300;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
 }
 
 dash-metric small {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--text-1);
 }
 
@@ -876,7 +803,7 @@ dash-metric[data-trend="down"] small {
 /* Compact layout in narrow containers */
 @container (width < 15rem) {
   dash-metric strong {
-    font-size: 1.5rem;
+    font-size: var(--text-xl);
   }
 }
 
@@ -1207,105 +1134,10 @@ button[data-variant="ghost"]:hover {
 
 
 /* --------------------------------------------------------------------------
-   18. Aspect Ratios
-       Standard ratios from the 2x Grid spec, via data attribute.
-   -------------------------------------------------------------------------- */
-
-[data-ratio="1x1"]  { aspect-ratio: 1 / 1; }
-[data-ratio="2x1"]  { aspect-ratio: 2 / 1; }
-[data-ratio="2x3"]  { aspect-ratio: 2 / 3; }
-[data-ratio="3x2"]  { aspect-ratio: 3 / 2; }
-[data-ratio="4x3"]  { aspect-ratio: 4 / 3; }
-[data-ratio="16x9"] { aspect-ratio: 16 / 9; }
-
-
-/* --------------------------------------------------------------------------
-   19. Sparse Utility Attributes
-       Only for genuinely reusable, intent-driven concepts.
-   -------------------------------------------------------------------------- */
-
-[data-text="mono"]  { font-family: var(--font-mono); }
-[data-text="muted"] { color: var(--text-1); }
-[data-text="small"] { font-size: 0.875rem; }
-
-/* Visually hidden — accessible to screen readers, invisible on screen */
-[data-visually-hidden] {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-
-/* --------------------------------------------------------------------------
-   20. Skip Link
-       First focusable element. Hidden until focused.
-   -------------------------------------------------------------------------- */
-
-[data-skip-link] {
-  position: fixed;
-  inset-block-start: -100%;
-  inset-inline-start: var(--space-2);
-  z-index: 200;
-  padding: var(--space-1) var(--space-2);
-  background: var(--accent);
-  color: var(--surface-1);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: var(--radius-s);
-}
-
-[data-skip-link]:focus {
-  inset-block-start: var(--space-2);
-}
-
-
-/* --------------------------------------------------------------------------
-   21. Focus Visible
-       Consistent keyboard focus ring across all interactive elements.
-   -------------------------------------------------------------------------- */
-
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Remove the custom outline suppression for inputs — let focus-visible handle it */
-dash-widget input:focus-visible,
-dash-widget select:focus-visible,
-dash-widget textarea:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-
-/* --------------------------------------------------------------------------
-   22. Reduced Motion
-       Disable transitions and animations for users who prefer it.
-   -------------------------------------------------------------------------- */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
-
-
-/* --------------------------------------------------------------------------
-   23. Dialog
+   18. Dialog
        Native <dialog> element. Opens via .showModal() (minimal JS).
        Closes via <form method="dialog"> — no JS needed.
-       Styled consistently with dash-widget.
+       Uses @starting-style for smooth entrance animations.
    -------------------------------------------------------------------------- */
 
 dialog {
@@ -1314,14 +1146,25 @@ dialog {
   background: var(--surface-1);
   color: var(--text-0);
   padding: 0;
-  width: min(32rem, calc(100vw - var(--space-4)));
+  width: min(65ch, calc(100vw - var(--space-4)));
   max-height: calc(100dvh - var(--space-6));
   height: fit-content;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 0.15);
+  box-shadow: 0 8px 32px oklch(0% 0 0 / 0.15);
   overflow: hidden;
   margin: auto;
   inset: 0;
   position: fixed;
+
+  /* Entrance animation properties */
+  opacity: 1;
+  translate: 0;
+  scale: 1;
+  transition:
+    opacity 200ms ease-out,
+    translate 200ms ease-out,
+    scale 200ms ease-out,
+    overlay 200ms ease-out allow-discrete,
+    display 200ms ease-out allow-discrete;
 }
 
 dialog[open] {
@@ -1329,9 +1172,29 @@ dialog[open] {
   flex-direction: column;
 }
 
+/* Initial state for entrance animation */
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    translate: 0 -0.5rem;
+    scale: 0.98;
+  }
+
+  dialog[open]::backdrop {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+}
+
 dialog::backdrop {
   background: var(--chrome-overlay);
   backdrop-filter: blur(2px);
+  opacity: 1;
+  transition:
+    opacity 200ms ease-out,
+    backdrop-filter 200ms ease-out,
+    overlay 200ms ease-out allow-discrete,
+    display 200ms ease-out allow-discrete;
 }
 
 /* Dialog header */
@@ -1609,7 +1472,7 @@ tab-group > :checked + label + tab-panel {
 [data-form] {
   display: grid;
   gap: var(--space-3);
-  max-width: 32rem;
+  max-width: 65ch;  /* Optimal reading width */
 }
 
 [data-form] hgroup {
@@ -1620,13 +1483,13 @@ tab-group > :checked + label + tab-panel {
 
 [data-form] hgroup h1,
 [data-form] hgroup h2 {
-  font-size: 1.5rem;
+  font-size: var(--text-xl);
   font-weight: 300;
   margin: 0;
 }
 
 [data-form] hgroup p {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--text-1);
   margin: 0;
 }
@@ -1711,3 +1574,77 @@ button[data-variant="dark"] {
 button[data-variant="dark"]:hover {
   background: var(--chrome-bg-hover);
 }
+
+} /* end @layer components */
+
+
+/* --------------------------------------------------------------------------
+   28. Utilities Layer
+       Aspect ratios, sparse utilities, skip link, focus, reduced motion.
+   -------------------------------------------------------------------------- */
+
+@layer utilities {
+
+/* Aspect Ratios — standard ratios from the 2x Grid spec */
+[data-ratio="1x1"]  { aspect-ratio: 1 / 1; }
+[data-ratio="2x1"]  { aspect-ratio: 2 / 1; }
+[data-ratio="2x3"]  { aspect-ratio: 2 / 3; }
+[data-ratio="3x2"]  { aspect-ratio: 3 / 2; }
+[data-ratio="4x3"]  { aspect-ratio: 4 / 3; }
+[data-ratio="16x9"] { aspect-ratio: 16 / 9; }
+
+/* Text utilities */
+[data-text="mono"]  { font-family: var(--font-mono); }
+[data-text="muted"] { color: var(--text-1); }
+[data-text="small"] { font-size: 0.875rem; }
+
+/* Visually hidden — accessible to screen readers, invisible on screen */
+[data-visually-hidden] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip Link — first focusable element, hidden until focused */
+[data-skip-link] {
+  position: fixed;
+  inset-block-start: -100%;
+  inset-inline-start: var(--space-2);
+  z-index: 200;
+  padding: var(--space-1) var(--space-2);
+  background: var(--accent);
+  color: var(--surface-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-s);
+}
+
+[data-skip-link]:focus {
+  inset-block-start: var(--space-2);
+}
+
+/* Focus Visible — consistent keyboard focus ring */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion — disable transitions and animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+} /* end @layer utilities */
