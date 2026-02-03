@@ -202,9 +202,31 @@
    Apply via <html data-theme="midcentury"> or <html data-theme="rams">.
    -------------------------------------------------------------------------- */
 
-/* Density variants — apply to any container */
-[data-density="compact"]      { --density: 0.75; }
-[data-density="comfortable"]  { --density: 1.25; }
+/* Density variants — apply to any container.
+   Must redeclare space calculations so they recompute with new density. */
+[data-density="compact"] {
+  --density: 0.75;
+  --space-unit: calc(0.5rem * var(--density));
+  --space-1: calc(var(--space-unit) * 1);
+  --space-2: calc(var(--space-unit) * 2);
+  --space-3: calc(var(--space-unit) * 3);
+  --space-4: calc(var(--space-unit) * 4);
+  --space-5: calc(var(--space-unit) * 6);
+  --space-6: calc(var(--space-unit) * 8);
+  --space-7: calc(var(--space-unit) * 10);
+}
+
+[data-density="comfortable"] {
+  --density: 1.25;
+  --space-unit: calc(0.5rem * var(--density));
+  --space-1: calc(var(--space-unit) * 1);
+  --space-2: calc(var(--space-unit) * 2);
+  --space-3: calc(var(--space-unit) * 3);
+  --space-4: calc(var(--space-unit) * 4);
+  --space-5: calc(var(--space-unit) * 6);
+  --space-6: calc(var(--space-unit) * 8);
+  --space-7: calc(var(--space-unit) * 10);
+}
 
 
 /* --------------------------------------------------------------------------
