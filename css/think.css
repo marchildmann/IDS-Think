@@ -1159,7 +1159,7 @@ button[data-variant="ghost"]:hover {
 :has(> [data-status] + [data-status]) {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
+  gap: var(--space-1) var(--space-2);
 }
 :has(> [data-status] + [data-status]) [data-status] + [data-status] { margin: 0; }
 
