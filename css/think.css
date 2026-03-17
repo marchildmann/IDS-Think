@@ -1136,7 +1136,8 @@ button[data-variant="ghost"]:hover {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: 0.125rem var(--space-1);
+  padding: 0.25rem var(--space-1);
+  margin: calc(var(--space-1) * 0.5);
   border-radius: 1rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -1153,15 +1154,6 @@ button[data-variant="ghost"]:hover {
 [data-status="active"]   { background: var(--positive-soft); color: var(--positive); }
 [data-status="pending"]  { background: var(--warning-soft); color: var(--warning-text); }
 [data-status="inactive"] { background: var(--negative-soft); color: var(--negative); }
-
-/* When multiple badges appear together, wrap with comfortable spacing */
-[data-status] + [data-status] { margin-inline-start: var(--space-1); }
-:has(> [data-status] + [data-status]) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-2);
-}
-:has(> [data-status] + [data-status]) [data-status] + [data-status] { margin: 0; }
 
 
 /* --------------------------------------------------------------------------
