@@ -21,23 +21,23 @@ IDS-Think is a **zero-build, CSS-first UI framework** that uses semantic HTML, c
 
 ## Files to Include
 
-Always use the hosted CDN URLs for the latest version:
+Always use the jsDelivr CDN URLs for the latest version:
 
 ```html
 <!-- Required -->
-<link rel="stylesheet" href="https://think.iotdata.systems/css/think.css">
-<script type="module" src="https://think.iotdata.systems/js/think.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/marchildmann/IDS-Think@main/css/think.css">
+<script src="https://cdn.jsdelivr.net/gh/marchildmann/IDS-Think@main/js/think.js" defer></script>
 
 <!-- Optional: datatable features -->
-<link rel="stylesheet" href="https://think.iotdata.systems/css/think_datatable.css">
-<script type="module" src="https://think.iotdata.systems/js/think_datatable.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/marchildmann/IDS-Think@main/css/think_datatable.css">
+<script src="https://cdn.jsdelivr.net/gh/marchildmann/IDS-Think@main/js/think_datatable.js" defer></script>
 
 <!-- Optional: color themes -->
-<link rel="stylesheet" href="https://think.iotdata.systems/css/themes/midcentury.css">
-<link rel="stylesheet" href="https://think.iotdata.systems/css/themes/rams.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/marchildmann/IDS-Think@main/css/themes/midcentury.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/marchildmann/IDS-Think@main/css/themes/rams.css">
 ```
 
-Base URL: `https://think.iotdata.systems/`
+Base URL: `https://cdn.jsdelivr.net/gh/marchildmann/IDS-Think@main/`
 
 Apply a theme: `<html data-theme="midcentury">` or `<html data-theme="rams">`. Omit for the default neutral theme.
 
