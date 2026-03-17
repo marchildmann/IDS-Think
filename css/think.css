@@ -1154,6 +1154,15 @@ button[data-variant="ghost"]:hover {
 [data-status="pending"]  { background: var(--warning-soft); color: var(--warning-text); }
 [data-status="inactive"] { background: var(--negative-soft); color: var(--negative); }
 
+/* When multiple badges appear together, wrap with comfortable spacing */
+[data-status] + [data-status] { margin-inline-start: var(--space-1); }
+:has(> [data-status] + [data-status]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+:has(> [data-status] + [data-status]) [data-status] + [data-status] { margin: 0; }
+
 
 /* --------------------------------------------------------------------------
    18. Dialog
