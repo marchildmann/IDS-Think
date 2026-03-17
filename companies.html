@@ -182,7 +182,7 @@
             </tbody>
           </table>
         </div>
-        <footer>6 companies</footer>
+        <footer data-label="companies">6 companies</footer>
       </dash-widget>
 
     </dash-board>
@@ -287,13 +287,7 @@
   </main>
 
   <script>
-    /* Search / filter */
-    document.getElementById("company-search").addEventListener("input", function () {
-      var query = this.value.toLowerCase();
-      document.querySelectorAll("#companies-tbody tr").forEach(function (row) {
-        row.style.display = row.textContent.toLowerCase().includes(query) ? "" : "none";
-      });
-    });
+    /* CRUD dialogs — sort & filter handled by think.js */
 
     /* Open dialog — new company */
     function openCompanyDialog() {

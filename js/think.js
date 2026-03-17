@@ -152,6 +152,114 @@
 })();
 
 
+/* --- Static table: sort & filter for any table with th[data-sort] --- */
+(() => {
+  const tables = document.querySelectorAll("table");
+  if (!tables.length) return;
+
+  // Skip tables inside [data-datatable] widgets — those have their own logic
+  tables.forEach((table) => {
+    if (table.closest("[data-datatable]")) return;
+
+    const headers = table.querySelectorAll("th[data-sort]");
+    if (!headers.length) return;
+
+    const tbody = table.querySelector("tbody");
+    if (!tbody) return;
+
+    // Find a sibling filter input: look in the same widget header
+    const widget = table.closest("dash-widget");
+    const filterInput = widget
+      ? widget.querySelector('input[type="search"]')
+      : null;
+    const footer = widget ? widget.querySelector("footer") : null;
+
+    let sortCol = -1;
+    let sortDir = "";
+
+    function parseNum(str) {
+      const n = parseFloat(str.replace(/[^0-9.\-]/g, ""));
+      return isNaN(n) ? 0 : n;
+    }
+
+    function cellText(row, idx) {
+      return row.children[idx] ? row.children[idx].textContent.trim() : "";
+    }
+
+    // Detect if a column is numeric by sampling the first non-empty cell
+    function isNumericCol(colIdx) {
+      const rows = tbody.querySelectorAll("tr");
+      for (const row of rows) {
+        const text = cellText(row, colIdx);
+        if (text && text !== "\u2014") {
+          return /^[\$\-\d,.\s%]+$/.test(text);
+        }
+      }
+      return false;
+    }
+
+    function sortTable(colIdx, dir) {
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      const numeric = isNumericCol(colIdx);
+      const m = dir === "desc" ? -1 : 1;
+
+      rows.sort((a, b) => {
+        const va = cellText(a, colIdx);
+        const vb = cellText(b, colIdx);
+        if (numeric) return (parseNum(va) - parseNum(vb)) * m;
+        return va.localeCompare(vb) * m;
+      });
+
+      rows.forEach((row) => tbody.appendChild(row));
+    }
+
+    function updateFooter() {
+      if (!footer) return;
+      const total = tbody.querySelectorAll("tr").length;
+      const visible = tbody.querySelectorAll("tr:not([hidden])").length;
+      const label = footer.dataset.label || "records";
+      footer.textContent = visible === total
+        ? `${total} ${label}`
+        : `${visible} of ${total} ${label}`;
+    }
+
+    // Sort headers
+    headers.forEach((th, idx) => {
+      th.style.cursor = "pointer";
+      th.addEventListener("click", () => {
+        if (sortCol === idx) {
+          sortDir = sortDir === "asc" ? "desc" : "asc";
+        } else {
+          sortCol = idx;
+          sortDir = "asc";
+        }
+
+        headers.forEach((h) => {
+          h.setAttribute("data-sort", "");
+          h.removeAttribute("aria-sort");
+        });
+
+        th.setAttribute("data-sort", sortDir);
+        th.setAttribute("aria-sort", sortDir === "asc" ? "ascending" : "descending");
+
+        sortTable(idx, sortDir);
+      });
+    });
+
+    // Filter
+    if (filterInput) {
+      filterInput.addEventListener("input", () => {
+        const query = filterInput.value.toLowerCase();
+        tbody.querySelectorAll("tr").forEach((row) => {
+          row.hidden = query && !row.textContent.toLowerCase().includes(query);
+        });
+        updateFooter();
+      });
+    }
+  });
+})();
+
+
 /* --- Form groups: serialize & POST as JSON --- */
 document.addEventListener("submit", async (e) => {
   const form = e.target;
