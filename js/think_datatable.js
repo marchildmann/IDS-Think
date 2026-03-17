@@ -565,20 +565,43 @@
   /*  Load URL — fetch JSON and populate the table                       */
   /* ------------------------------------------------------------------ */
 
+  function isJsonlUrl(url) {
+    try {
+      var pathname = new URL(url, location.href).pathname;
+      return /\.jsonl$/i.test(pathname);
+    } catch (_) {
+      return /\.jsonl$/i.test(url.split("?")[0]);
+    }
+  }
+
+  function parseJsonl(text) {
+    var rows = [];
+    var lines = text.split("\n");
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      rows.push(JSON.parse(line));
+    }
+    return rows;
+  }
+
   function loadUrl(widget, url) {
     var footer = widget.querySelector("footer");
     if (footer) footer.textContent = "Loading\u2026";
 
+    var jsonl = isJsonlUrl(url);
+
     fetch(url)
       .then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.json();
+        return jsonl ? res.text() : res.json();
       })
-      .then(function (data) {
+      .then(function (raw) {
+        var data = jsonl ? parseJsonl(raw) : raw;
         var parsed = parseData(data);
         if (!parsed) {
-          if (footer) footer.textContent = "Could not detect rows in JSON";
-          console.warn("Datatable: could not detect rows in JSON from", url);
+          if (footer) footer.textContent = "Could not detect rows in " + (jsonl ? "JSONL" : "JSON");
+          console.warn("Datatable: could not detect rows from", url);
           return;
         }
 
