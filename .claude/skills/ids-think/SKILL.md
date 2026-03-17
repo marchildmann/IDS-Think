@@ -43,38 +43,79 @@ Apply a theme: `<html data-theme="midcentury">` or `<html data-theme="rams">`. O
 
 ## Page Shell
 
-Every dashboard page follows this structure:
+Every dashboard page follows this structure. **Pay close attention to element nesting** — the checkboxes live *inside* `<header>`, each immediately after its `<label>`.
 
 ```html
 <body>
-  <input type="checkbox" id="nav-toggle" data-visually-hidden>
-  <input type="checkbox" id="theme-toggle" data-visually-hidden>
+  <!-- Skip link — MUST be the first focusable element in <body> -->
+  <a href="#main-content" data-skip-link>Skip to content</a>
 
   <header>
+    <!-- Nav toggle: label first, then its checkbox -->
     <label for="nav-toggle">&#9776;</label>
-    <strong>App Name</strong>
-    <nav><!-- header links --></nav>
-    <select id="theme-select">
+    <input type="checkbox" id="nav-toggle" data-visually-hidden aria-label="Toggle navigation">
+
+    <h1>App Name</h1>
+    <nav aria-label="Primary">
+      <a href="#">Dashboard</a>
+      <a href="#">Analytics</a>
+    </nav>
+    <span data-role="spacer"></span>
+    <search>
+      <input type="search" placeholder="Search...">
+    </search>
+    <select id="color-theme" aria-label="Color theme">
       <option value="">Default</option>
-      <option value="midcentury">Midcentury</option>
+      <option value="midcentury">Mid Century</option>
       <option value="rams">Rams</option>
     </select>
+    <!-- Theme toggle: checkbox after its label -->
+    <input type="checkbox" id="theme-toggle" data-visually-hidden aria-label="Toggle dark mode">
     <label for="theme-toggle" data-role="theme-toggle"></label>
     <span data-role="avatar">U</span>
   </header>
 
-  <nav>
+  <!-- Sidebar navigation -->
+  <nav aria-label="Sidebar">
     <span data-role="heading">Section</span>
     <a href="#" aria-current="page">Active Link</a>
     <a href="#">Other Link</a>
   </nav>
 
-  <main>
-    <!-- content here -->
+  <!-- Main content — MUST have id and data-grid -->
+  <main id="main-content" data-grid="fluid">
+
+    <!-- Breadcrumb (optional) -->
+    <nav aria-label="Breadcrumb" data-span="full">
+      <ol>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Section</a></li>
+        <li>Current Page</li>
+      </ol>
+    </nav>
+
+    <!-- Page title with subtitle (optional) -->
+    <hgroup data-span="full">
+      <h1>Page Title</h1>
+      <p>Subtitle or description</p>
+    </hgroup>
+
+    <!-- ALL widgets go inside a single <dash-board> -->
+    <dash-board data-span="full">
+      <!-- <dash-widget> elements here -->
+    </dash-board>
   </main>
 </body>
 ```
 
+### Critical layout rules
+
+- **Skip link**: `<a href="#main-content" data-skip-link>` must be the first element in `<body>`.
+- **Checkboxes inside `<header>`**: `#nav-toggle` and `#theme-toggle` are *inside* `<header>`, each placed immediately after its `<label>`. Do NOT put them before `<header>`.
+- **`<main>` requires attributes**: Always use `<main id="main-content" data-grid="fluid">`.
+- **Single `<dash-board>`**: All `<dash-widget>` elements go inside **one** `<dash-board data-span="full">` nested inside `<main>`. Do NOT create multiple `<dash-board>` elements.
+- **`<hgroup>` for page titles**: Use `<hgroup data-span="full">` with `<h1>` + `<p>` for page title + subtitle. Place it as a direct child of `<main>`, before `<dash-board>`.
+- **Breadcrumb**: Use `<nav aria-label="Breadcrumb" data-span="full">` with an `<ol>` inside `<main>`, before `<hgroup>`.
 - Dark mode: CSS-only via `#theme-toggle` checkbox and `:has()`. JS in `think.js` syncs to OS preference on load.
 - Mobile nav: CSS-only via `#nav-toggle` checkbox. Sidebar shows/hides via `:has(#nav-toggle:checked)`.
 
@@ -109,13 +150,17 @@ Spans auto-clamp at smaller breakpoints (e.g. `data-span="8"` becomes full-width
 
 ### `<dash-board>` — Widget grid container
 
+There must be exactly **one** `<dash-board>` per page, as a direct child of `<main>`:
+
 ```html
-<dash-board data-span="full">
-  <!-- widgets go here -->
-</dash-board>
+<main id="main-content" data-grid="fluid">
+  <dash-board data-span="full">
+    <!-- ALL dash-widget elements go here -->
+  </dash-board>
+</main>
 ```
 
-Auto-responsive: 1 col (sm) → 2 col (md) → 4 col (lg+).
+Auto-responsive: 1 col (sm) → 2 col (md) → 4 col (lg+). Do NOT create separate `<dash-board>` elements per section — this breaks spacing.
 
 ### `<dash-widget>` — Card component
 
@@ -133,21 +178,37 @@ Auto-responsive: 1 col (sm) → 2 col (md) → 4 col (lg+).
 ```
 
 - `data-span="1"` to `data-span="4"` — dashboard column span
+- `data-span="full"` — spans all dashboard columns (use this instead of `data-span="4"` for full-width widgets)
 - Has `container-type: inline-size` — children can use `@container` queries
 - Header and footer are optional
 
 ### `<dash-metric>` — KPI display
 
+Metrics **must** be nested inside a widget: `<dash-widget>` → `<div>` → `<dash-metric-group>` → `<dash-metric>`. Never place `<dash-metric>` directly inside `<dash-board>`.
+
 ```html
-<dash-metric>
-  <small>Revenue</small>
-  <strong>$1,234,567</strong>
-  <small data-trend="up">+12.5%</small>
-</dash-metric>
+<dash-widget data-span="full">
+  <header><h2>Key Metrics</h2></header>
+  <div>
+    <dash-metric-group>
+      <dash-metric data-trend="up">
+        <small>Revenue</small>
+        <strong>$1,234,567</strong>
+        <small>&#x25B2; +12.5% from last month</small>
+      </dash-metric>
+      <dash-metric data-trend="down">
+        <small>Churn</small>
+        <strong>3.2%</strong>
+        <small>&#x25BC; -0.5% from last month</small>
+      </dash-metric>
+    </dash-metric-group>
+  </div>
+</dash-widget>
 ```
 
-- `data-trend="up"` — green positive color
-- `data-trend="down"` — red negative color
+- `data-trend="up"` on `<dash-metric>` — green positive color for the whole metric
+- `data-trend="down"` on `<dash-metric>` — red negative color for the whole metric
+- **Put `data-trend` on the `<dash-metric>` element itself**, not on the child `<small>`
 - Wrap multiple in `<dash-metric-group>` for auto-grid layout
 
 ### `<tab-group>` — CSS-only tabs
@@ -298,6 +359,12 @@ Open with JS: `document.querySelector('dialog').showModal()`. Animated entrance 
 6. **Never hardcode spacing** — use `var(--space-1)` through `var(--space-7)`
 7. **Don't forget `data-label` on `<td>`** — needed for responsive table card layout
 8. **Don't use media queries in widgets** — use `@container` queries instead
+9. **Don't put checkboxes before `<header>`** — `#nav-toggle` and `#theme-toggle` go *inside* `<header>`, each after its `<label>`
+10. **Don't create multiple `<dash-board>` elements** — use exactly one `<dash-board data-span="full">` inside `<main>`
+11. **Don't put `<dash-metric>` directly in `<dash-board>`** — nest as: `<dash-widget>` → `<div>` → `<dash-metric-group>` → `<dash-metric>`
+12. **Don't put `data-trend` on child `<small>`** — put `data-trend="up|down"` on the `<dash-metric>` element itself
+13. **Don't use `data-span="4"` for full-width widgets** — use `data-span="full"` instead
+14. **Don't forget `<main id="main-content" data-grid="fluid">`** — both the `id` and `data-grid` are required
 
 ## Reference
 

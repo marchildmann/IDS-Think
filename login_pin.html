@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Enter your PIN to access the Customer Direct Report.">
+  <title>PIN Unlock — IDS-Think</title>
+  <link rel="stylesheet" href="css/think.css">
+  <script src="js/think.js" defer></script>
+  <style>
+    body {
+      align-content: center;
+      padding-block: var(--space-3);
+    }
+
+    [data-auth-card] {
+      background: var(--surface-1);
+      border: 1px solid var(--surface-2);
+      padding: 0;
+    }
+
+    [data-auth-card] [data-form] {
+      max-width: none;
+    }
+
+    [data-auth-header] {
+      padding: var(--space-3) var(--space-4);
+      border-block-end: 1px solid var(--surface-2);
+    }
+
+    [data-auth-header] h1 {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-0);
+      margin: 0;
+    }
+
+    [data-auth-body] {
+      padding: var(--space-4);
+    }
+
+    [data-auth-body] > p {
+      text-align: center;
+      color: var(--text-1);
+      margin: 0 0 var(--space-4);
+      font-size: var(--text-base);
+    }
+
+    /* PIN input — single field, wide letter-spacing for digit separation */
+    [data-pin-input] {
+      display: block;
+      width: 100%;
+      font-family: var(--font-mono, ui-monospace, monospace);
+      font-size: var(--text-2xl);
+      text-align: center;
+      letter-spacing: 0.5em;
+      padding: var(--space-3) var(--space-2);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-m);
+      background: var(--surface-1);
+      color: var(--text-0);
+      caret-color: var(--accent);
+      outline: none;
+    }
+
+    [data-pin-input]:focus {
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    [data-pin-input]::placeholder {
+      color: var(--text-2);
+      letter-spacing: 0.5em;
+    }
+
+    [data-actions] {
+      margin-block-start: var(--space-4);
+    }
+
+    [data-actions] button {
+      width: 100%;
+    }
+
+    [data-auth-footer] {
+      text-align: center;
+      padding: var(--space-2) var(--space-4);
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+
+    [data-auth-footer] a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    [data-auth-footer] a:hover {
+      text-decoration: underline;
+    }
+
+    [data-theme-corner] {
+      position: fixed;
+      top: var(--space-2);
+      right: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+  </style>
+</head>
+<body data-grid="fluid">
+
+  <!-- Theme toggle in corner -->
+  <div data-theme-corner>
+    <select id="color-theme" aria-label="Color theme">
+      <option value="">Default</option>
+      <option value="midcentury">Mid Century</option>
+      <option value="rams">Rams</option>
+    </select>
+    <input type="checkbox" id="theme-toggle" data-visually-hidden aria-label="Toggle dark mode">
+    <label for="theme-toggle" data-role="theme-toggle"></label>
+  </div>
+
+  <div data-auth-card data-span-center="4">
+    <div data-auth-header>
+      <h1>Customer Direct Report</h1>
+    </div>
+
+    <div data-auth-body>
+      <p>Enter PIN to continue</p>
+
+      <form data-form data-form-group="pin" data-action="/api/pin-unlock">
+        <label>
+          <span>PIN</span>
+          <input
+            data-pin-input
+            type="password"
+            name="pin"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+            maxlength="6"
+            placeholder="— — — — — —"
+            required
+            autocomplete="one-time-code"
+            autofocus
+            aria-label="6-digit PIN"
+          >
+        </label>
+
+        <div data-actions>
+          <button data-variant="primary" type="submit">Unlock</button>
+        </div>
+      </form>
+    </div>
+
+    <div data-auth-footer>
+      <p><a href="login.html">Back to sign in</a></p>
+    </div>
+  </div>
+
+</body>
+</html>

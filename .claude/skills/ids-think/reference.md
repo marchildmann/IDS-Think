@@ -99,8 +99,8 @@
 
 | Attribute | Values | Element | Purpose |
 |-----------|--------|---------|---------|
-| `data-span` | `"1"`–`"4"` | `<dash-widget>` | Dashboard grid span |
-| `data-trend` | `"up"`, `"down"` | `<small>` inside `<dash-metric>` | KPI trend indicator |
+| `data-span` | `"1"`–`"4"`, `"full"` | `<dash-widget>` | Dashboard grid span (`"full"` for full-width) |
+| `data-trend` | `"up"`, `"down"` | `<dash-metric>` | KPI trend indicator (place on the element itself, not on children) |
 
 ### Forms
 
